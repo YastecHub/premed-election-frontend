@@ -6,7 +6,8 @@ A modern, mobile-first election management system built with React, TypeScript, 
 
 ### User Features
 - **Mobile-First Design**: Fully responsive interface optimized for mobile devices
-- **User Registration & Verification**: Multi-step registration with ID card upload
+- **User Registration with OCR Verification**: Two-step registration with mandatory ID card upload and dual OCR verification (Tesseract + Gemini AI)
+- **Real-Time Status Updates**: Instant verification results after document upload
 - **Real-Time Voting**: Cast votes with instant feedback
 - **Live Results**: View election results with rankings and percentages
 - **Election Status**: Real-time countdown timer showing time remaining
@@ -168,9 +169,9 @@ Flexible duration settings:
 ### Endpoints Used
 
 **Authentication:**
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/admin/login` - Admin login
+- `POST /api/register-with-verification` - User registration with document (FormData)
+- `POST /api/login-with-code` - Access code login
+- `POST /api/admin/login` - Admin login
 
 **Voting:**
 - `GET /api/candidates` - Get all candidates
@@ -193,6 +194,7 @@ Flexible duration settings:
 ### Socket Events
 
 **Listening:**
+- `user_status_update` - User verification status changed
 - `ELECTION_STARTED` - Election begins
 - `ELECTION_PAUSED` - Election paused
 - `ELECTION_RESUMED` - Election resumed
