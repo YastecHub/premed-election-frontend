@@ -43,5 +43,6 @@ export const SOCKET_EVENTS = {
   ELECTION_ENDED: 'election_ended',
   ELECTION_STARTED: 'election_started',
   ELECTION_PAUSED: 'election_paused',
-  ELECTION_RESUMED: 'election_resumed'
+  ELECTION_RESUMED: 'election_resumed',
+  USER_STATUS_UPDATE: 'user_status_update'
 } as const;

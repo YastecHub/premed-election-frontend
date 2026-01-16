@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RegistrationForm, User } from '../../shared/types';
 import { authService } from '../../core/services/auth.service';
 import { useNotification } from '../../shared/contexts/NotificationContext';
+import { FileUpload } from '../../shared/components/FileUpload';
 import { CloudArrowUpIcon, DocumentCheckIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 interface VerificationPageProps {
@@ -21,13 +22,6 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ draft, onVer
       case 'extracting': return 'Extracting your details with OCR...';
       case 'verifying': return 'Verifying information...';
       default: return 'Upload your student ID';
-    }
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
     }
   };
 
@@ -81,26 +75,12 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ draft, onVer
 
       {!isUploading ? (
         <div className="space-y-4">
-          <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
-            <input
-              type="file"
-              accept="image/*,.pdf"
-              onChange={handleFileSelect}
-              className="hidden"
-              id="document-upload"
-            />
-            <label htmlFor="document-upload" className="cursor-pointer block">
-              <CloudArrowUpIcon className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-              <p className="text-sm text-slate-600">
-                {selectedFile ? selectedFile.name : 'Click to upload student ID'}
-              </p>
-            </label>
-          </div>
+          <FileUpload onFileSelect={setSelectedFile} />
           
           {selectedFile && (
             <button
               onClick={handleFileUpload}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors min-h-[44px]"
             >
               Verify Document
             </button>
