@@ -37,6 +37,14 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - cache-first strategy with network fallback
 self.addEventListener('fetch', (event) => {
+  // Skip service worker for API requests
+  if (event.request.url.includes('/api/') || 
+      event.request.url.includes('onrender.com') ||
+      event.request.url.includes('socket.io')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   // Don't cache POST, PUT, DELETE requests
   if (event.request.method !== 'GET') {
     event.respondWith(fetch(event.request));
