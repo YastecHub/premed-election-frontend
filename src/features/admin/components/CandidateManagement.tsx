@@ -4,7 +4,9 @@ import { adminService } from '../../../core/services/admin.service';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
 import { useConfirmation } from '../../../shared/hooks/useConfirmation';
 import { ConfirmationModal } from '../../../shared/components/ConfirmationModal';
-import { Plus, Trash2 } from 'lucide-react';
+import { FileUpload } from '../../../shared/components/FileUpload';
+import { uploadToCloudinary } from '../../../shared/utils/cloudinary';
+import { Plus, Trash2, Upload } from 'lucide-react';
 
 interface CandidateManagementProps {
   candidates: Candidate[];
@@ -16,6 +18,8 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
   const { showError, showSuccess } = useNotification();
   const { confirm, isOpen, options, handleConfirm, handleCancel } = useConfirmation();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [newCandidate, setNewCandidate] = useState({
     name: '',
     categoryId: '',
@@ -31,14 +35,27 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
       showError('Please select a category');
       return;
     }
+    if (!selectedPhoto) {
+      showError('Please upload a candidate photo');
+      return;
+    }
+    
+    setIsUploading(true);
     try {
-      await adminService.addCandidate(newCandidate);
+      // Upload photo to Cloudinary
+      const photoUrl = await uploadToCloudinary(selectedPhoto);
+      
+      // Add candidate with uploaded photo URL
+      await adminService.addCandidate({ ...newCandidate, photoUrl });
       showSuccess('Candidate added successfully');
       setShowAddForm(false);
       setNewCandidate({ name: '', categoryId: '', department: '', photoUrl: '', manifesto: '', color: 'bg-blue-500' });
+      setSelectedPhoto(null);
       onUpdate();
     } catch (error: any) {
       showError(error.message || 'Failed to add candidate');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -125,19 +142,6 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
             </div>
             
             <div>
-              <label htmlFor="candidate-photo" className="block text-sm font-medium text-slate-300 mb-1">Photo URL</label>
-              <input
-                id="candidate-photo"
-                type="url"
-                placeholder="Photo URL"
-                value={newCandidate.photoUrl}
-                onChange={(e) => setNewCandidate(prev => ({ ...prev, photoUrl: e.target.value }))}
-                className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white"
-                required
-              />
-            </div>
-            
-            <div>
               <label htmlFor="candidate-color" className="block text-sm font-medium text-slate-300 mb-1">Color Theme</label>
               <select
                 id="candidate-color"
@@ -151,6 +155,21 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
                 <option value="bg-red-500">Red</option>
                 <option value="bg-yellow-500">Yellow</option>
               </select>
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              <Upload className="h-4 w-4 inline mr-1" />
+              Candidate Photo
+            </label>
+            <div className="bg-slate-700 rounded-lg p-4">
+              <FileUpload
+                onFileSelect={setSelectedPhoto}
+                acceptedTypes={['image/jpeg', 'image/png', 'image/jpg']}
+                maxSize={5 * 1024 * 1024}
+                preview={true}
+              />
             </div>
           </div>
           
@@ -169,14 +188,19 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
           <div className="flex space-x-4">
             <button
               type="submit"
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+              disabled={isUploading}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-lg transition-colors"
             >
-              Add Candidate
+              {isUploading ? 'Uploading...' : 'Add Candidate'}
             </button>
             <button
               type="button"
-              onClick={() => setShowAddForm(false)}
-              className="px-4 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors"
+              onClick={() => {
+                setShowAddForm(false);
+                setSelectedPhoto(null);
+              }}
+              disabled={isUploading}
+              className="px-4 py-2 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-500 rounded-lg transition-colors"
             >
               Cancel
             </button>

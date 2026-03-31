@@ -1,18 +1,22 @@
 import React, { useState, useRef } from 'react';
-import { CloudArrowUpIcon, XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { CloudUpload, X, Image } from 'lucide-react';
 
 interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
   acceptedTypes?: string[];
   maxSize?: number;
   preview?: boolean;
+  label?: string;
+  description?: string;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
   onFileSelect,
   acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'],
   maxSize = 5 * 1024 * 1024,
-  preview = true
+  preview = true,
+  label = 'Upload Image',
+  description = 'Drag & drop or click to browse'
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -91,12 +95,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             id="file-upload"
           />
           <label htmlFor="file-upload" className="cursor-pointer block text-center">
-            <CloudArrowUpIcon className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+            <CloudUpload className="h-12 w-12 text-slate-400 mx-auto mb-3" />
             <p className="text-sm font-semibold text-slate-700 mb-1">
-              Upload Student ID Card
+              {label}
             </p>
             <p className="text-xs text-slate-500 mb-2">
-              Drag & drop or click to browse
+              {description}
             </p>
             <p className="text-xs text-slate-400">
               JPG, PNG or GIF (max {(maxSize / (1024 * 1024)).toFixed(0)}MB)
@@ -116,7 +120,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           )}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 flex-1 min-w-0">
-              <PhotoIcon className="h-5 w-5 text-green-600 flex-shrink-0" />
+              <Image className="h-5 w-5 text-green-600 flex-shrink-0" />
               <span className="text-sm font-medium text-slate-700 truncate">
                 {file.name}
               </span>
@@ -126,7 +130,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               onClick={handleClear}
               className="ml-2 p-1 hover:bg-red-100 rounded-full transition-colors flex-shrink-0"
             >
-              <XMarkIcon className="h-5 w-5 text-red-600" />
+              <X className="h-5 w-5 text-red-600" />
             </button>
           </div>
           <p className="text-xs text-slate-500 mt-2">
