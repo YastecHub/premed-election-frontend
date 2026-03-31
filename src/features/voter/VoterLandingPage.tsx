@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserPlus, Vote, CheckCircle, ArrowRight, MessageCircle } from 'lucide-react';
+import { PWAInstallBanner } from '../../shared/components/PWAInstallBanner';
 
 interface VoterLandingPageProps {
   onNavigateToRegister: () => void;
@@ -11,7 +12,9 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
   onNavigateToLogin
 }) => {
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <>
+      <PWAInstallBanner />
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="max-w-5xl w-full">
         {/* Hero Section */}
         <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -142,6 +145,6 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
           </a>
         </div>
       </div>
-    </div>
+    </>
   );
 };

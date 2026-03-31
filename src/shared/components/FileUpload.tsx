@@ -129,6 +129,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               type="button"
               onClick={handleClear}
               className="ml-2 p-1 hover:bg-red-100 rounded-full transition-colors flex-shrink-0"
+              aria-label="Remove uploaded file"
+              title="Remove file"
             >
               <X className="h-5 w-5 text-red-600" />
             </button>
