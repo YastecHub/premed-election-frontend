@@ -4,7 +4,7 @@ import { categoryService } from '../../../core/services/category.service';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
 import { useConfirmation } from '../../../shared/hooks/useConfirmation';
 import { ConfirmationModal } from '../../../shared/components/ConfirmationModal';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 export const CategoryManagement: React.FC = () => {
   const { showError, showSuccess } = useNotification();
@@ -83,7 +83,7 @@ export const CategoryManagement: React.FC = () => {
           onClick={() => setShowForm(!showForm)}
           className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors min-h-[44px]"
         >
-          <PlusIcon className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           <span>Add Category</span>
         </button>
       </div>
@@ -141,27 +141,20 @@ export const CategoryManagement: React.FC = () => {
                   className="p-1 text-blue-400 hover:text-blue-300 transition-colors"
                   title="Edit category"
                 >
-                  <PencilIcon className="h-4 w-4" />
+                  <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(category._id, category.name)}
                   className="p-1 text-red-400 hover:text-red-300 transition-colors"
                   title="Delete category"
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             </div>
             {category.description && (
               <p className="text-sm text-slate-400">{category.description}</p>
             )}
-            <div className="mt-2">
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                category.isActive ? 'bg-green-900 text-green-200' : 'bg-slate-700 text-slate-300'
-              }`}>
-                {category.isActive ? 'Active' : 'Inactive'}
-              </span>
-            </div>
           </div>
         ))}
       </div>

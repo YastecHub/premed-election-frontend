@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckBadgeIcon, LockClosedIcon, PauseIcon } from '@heroicons/react/24/solid';
+import { BadgeCheck, Lock, Pause, Clock } from 'lucide-react';
 import { User, ElectionState } from '../../../shared/types';
 import { CountdownTimer } from '../../../shared/components/CountdownTimer';
 
@@ -20,7 +20,7 @@ export const ElectionStatusScreen: React.FC<ElectionStatusScreenProps> = ({
         <div className="relative">
           <div className="absolute inset-0 bg-green-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
           <div className="bg-gradient-to-br from-green-400 to-emerald-600 p-6 rounded-full shadow-xl relative z-10 mb-6">
-            <CheckBadgeIcon className="h-16 w-16 md:h-20 md:w-20 text-white" />
+            <BadgeCheck className="h-16 w-16 md:h-20 md:w-20 text-white" />
           </div>
         </div>
         
@@ -55,13 +55,48 @@ export const ElectionStatusScreen: React.FC<ElectionStatusScreenProps> = ({
     );
   }
 
+  if (electionState.status === 'not_started') {
+    return (
+      <div className="glass-panel rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl border-white/60 flex flex-col items-center animate-in zoom-in-95 duration-700">
+        <div className="relative">
+          <div className="absolute inset-0 bg-blue-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
+          <div className="bg-gradient-to-br from-blue-400 to-indigo-600 p-6 rounded-full shadow-xl relative z-10 mb-6">
+            <Lock className="h-16 w-16 md:h-20 md:w-20 text-white" />
+          </div>
+        </div>
+        
+        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
+          Election Not Started
+        </h2>
+        <p className="text-slate-600 text-base md:text-lg max-w-md leading-relaxed mb-8">
+          Welcome, <span className="font-bold text-slate-900">{user.fullName}</span>. 
+          The election has not started yet. Please check back later.
+        </p>
+        
+        <div className="p-6 bg-blue-50 rounded-xl border border-blue-200 w-full max-w-sm mb-8">
+          <p className="text-sm text-blue-700 font-semibold flex items-center justify-center">
+            <Clock className="h-4 w-4 mr-1" /> Waiting for Administrator
+          </p>
+          <p className="text-xs text-blue-600 mt-2">The admin will start the election soon</p>
+        </div>
+
+        <button 
+          onClick={onLogout} 
+          className="px-8 py-3 border border-slate-300 rounded-xl text-slate-600 font-bold hover:bg-slate-50 hover:text-slate-900 transition-colors w-full md:w-auto"
+        >
+          Sign Out
+        </button>
+      </div>
+    );
+  }
+
   if (electionState.status === 'paused') {
     return (
       <div className="glass-panel rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-2xl border-white/60 flex flex-col items-center animate-in zoom-in-95 duration-700">
         <div className="relative">
           <div className="absolute inset-0 bg-amber-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
           <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-6 rounded-full shadow-xl relative z-10 mb-6">
-            <PauseIcon className="h-16 w-16 md:h-20 md:w-20 text-white" />
+            <Pause className="h-16 w-16 md:h-20 md:w-20 text-white" />
           </div>
         </div>
         
@@ -83,7 +118,9 @@ export const ElectionStatusScreen: React.FC<ElectionStatusScreenProps> = ({
         )}
 
         <div className="p-6 bg-amber-50 rounded-xl border border-amber-200 w-full max-w-sm mb-8">
-          <p className="text-sm text-amber-700 font-semibold">⏸ Waiting for Administrator</p>
+          <p className="text-sm text-amber-700 font-semibold flex items-center justify-center">
+            <Pause className="h-4 w-4 mr-1" /> Waiting for Administrator
+          </p>
           <p className="text-xs text-amber-600 mt-2">Please wait while the election is resumed</p>
         </div>
 
@@ -103,7 +140,7 @@ export const ElectionStatusScreen: React.FC<ElectionStatusScreenProps> = ({
         <div className="relative">
           <div className="absolute inset-0 bg-red-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
           <div className="bg-gradient-to-br from-red-400 to-orange-600 p-6 rounded-full shadow-xl relative z-10 mb-6">
-            <LockClosedIcon className="h-16 w-16 md:h-20 md:w-20 text-white" />
+            <Lock className="h-16 w-16 md:h-20 md:w-20 text-white" />
           </div>
         </div>
         

@@ -22,7 +22,7 @@ export class AdminService {
     return apiClient.post<Admin>('/admin/create', data);
   }
 
-  async addCandidate(data: { name: string; position: string; photoUrl: string; manifesto: string; color: string }): Promise<Candidate> {
+  async addCandidate(data: { name: string; categoryId: string; department: string; photoUrl: string; manifesto: string; color: string }): Promise<Candidate> {
     return apiClient.post<Candidate>('/candidates', data);
   }
 

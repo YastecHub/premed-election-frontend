@@ -46,7 +46,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onStatusChan
         return (
           <div className="flex items-center space-x-2 bg-green-100 text-green-800 px-4 py-3 rounded-lg">
             <CheckCircleIcon className="h-5 w-5" />
-            <span className="font-semibold">Verified ✓ - You can vote</span>
+            <span className="font-semibold">Verified - You can vote</span>
           </div>
         );
       case 'rejected':

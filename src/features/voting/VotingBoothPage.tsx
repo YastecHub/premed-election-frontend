@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { User, Candidate, ApiError } from '../../shared/types';
+import { User, Candidate, Category, ApiError } from '../../shared/types';
 import { votingService } from '../../core/services/voting.service';
+import { categoryService } from '../../core/services/category.service';
 import { useElection } from '../../shared/hooks/useElection';
 import { useNotification } from '../../shared/contexts/NotificationContext';
 import { CandidateCard } from './components/CandidateCard';
 import { VoteConfirmationModal } from './components/VoteConfirmationModal';
 import { ElectionStatusScreen } from './components/ElectionStatusScreen';
 import { CountdownTimer } from '../../shared/components/CountdownTimer';
-import { ShieldCheckIcon } from '@heroicons/react/24/solid';
+import { ShieldCheck } from 'lucide-react';
 
 interface VotingBoothPageProps {
   user: User;
@@ -20,6 +21,7 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
   const { showError } = useNotification();
   const electionState = useElection();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(user.hasVoted);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,8 +31,14 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
   useEffect(() => {
     // Delay API call to not block initial render
     const timer = setTimeout(() => {
-      votingService.getCandidates()
-        .then(setCandidates)
+      Promise.all([
+        votingService.getCandidates(),
+        categoryService.getCategories()
+      ])
+        .then(([candidatesData, categoriesData]) => {
+          setCandidates(candidatesData);
+          setCategories(categoriesData);
+        })
         .catch(e => showError(e.message || 'Failed to load candidates. Please refresh the page.'))
         .finally(() => setIsLoading(false));
     }, 200);
@@ -81,7 +89,7 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
   }
 
   // Show status screens for non-voting states
-  if (hasVoted || electionState.status === 'paused' || electionState.status === 'ended') {
+  if (hasVoted || electionState.status === 'not_started' || electionState.status === 'paused' || electionState.status === 'ended') {
     return (
       <ElectionStatusScreen 
         user={{ ...user, hasVoted }}
@@ -119,19 +127,38 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
             <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Security Active</div>
             <div className="text-xs font-bold text-emerald-600">Anti-Fraud Enabled</div>
           </div>
-          <ShieldCheckIcon className="h-8 w-8 text-emerald-500 opacity-80" />
+          <ShieldCheck className="h-8 w-8 text-emerald-500 opacity-80" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-        {candidates.map((candidate) => (
-          <CandidateCard
-            key={candidate._id}
-            candidate={candidate}
-            isSelected={selectedCandidate === candidate._id}
-            onSelect={setSelectedCandidate}
-          />
-        ))}
+      {/* Group candidates by category */}
+      <div className="space-y-8">
+        {categories.map(category => {
+          const categoryCandidates = candidates.filter(c => c.categoryId === category._id);
+          if (categoryCandidates.length === 0) return null;
+          
+          return (
+            <div key={category._id}>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-slate-800">{category.name}</h2>
+                {category.description && (
+                  <p className="text-slate-600 text-sm mt-1">{category.description}</p>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                {categoryCandidates.map((candidate) => (
+                  <CandidateCard
+                    key={candidate._id}
+                    candidate={candidate}
+                    isSelected={selectedCandidate === candidate._id}
+                    onSelect={setSelectedCandidate}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="fixed bottom-8 left-0 right-0 flex justify-center z-40 pointer-events-none px-4">

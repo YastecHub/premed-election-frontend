@@ -7,8 +7,6 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ view, onViewChange, isVisible }) => {
-  if (!isVisible) return null;
-
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 transition-all duration-300">
       <div className="max-w-2xl mx-auto px-4">

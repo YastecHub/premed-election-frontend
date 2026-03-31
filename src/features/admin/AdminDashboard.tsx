@@ -16,7 +16,7 @@ import { AdminManagement } from './components/AdminManagement';
 import { ElectionCharts } from './components/ElectionCharts';
 import { LiveResults } from './components/LiveResults';
 import { CountdownTimer } from '../../shared/components/CountdownTimer';
-import { UsersIcon, CheckCircleIcon, UserGroupIcon, ChartBarIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { Users, CheckCircle, UserCheck, BarChart3, LogOut, Lock, Flag, Pause, Square, LayoutDashboard, FolderOpen, Vote, UserCog } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
   const { showError } = useNotification();
@@ -129,7 +129,9 @@ export const AdminDashboard: React.FC = () => {
       case 'admins':
         return admin.role === 'super_admin' ? <AdminManagement /> : (
           <div className="bg-slate-800 rounded-lg p-8 text-center">
-            <div className="text-4xl mb-4">🔒</div>
+            <div className="flex justify-center mb-4">
+              <Lock className="h-12 w-12 text-slate-400" />
+            </div>
             <h3 className="text-lg font-semibold text-white mb-2">Access Restricted</h3>
             <p className="text-slate-400">This section is only available to super administrators.</p>
           </div>
@@ -143,25 +145,25 @@ export const AdminDashboard: React.FC = () => {
               <StatCard 
                 title="Total Candidates" 
                 value={stats.users} 
-                icon={UserGroupIcon} 
+                icon={Users} 
                 color="bg-blue-500/20 text-blue-400" 
               />
               <StatCard 
                 title="Total Votes" 
                 value={stats.votes} 
-                icon={CheckCircleIcon} 
+                icon={CheckCircle} 
                 color="bg-green-500/20 text-green-400" 
               />
               <StatCard 
                 title="Pending Verifications" 
                 value={stats.pending} 
-                icon={UsersIcon} 
+                icon={UserCheck} 
                 color="bg-yellow-500/20 text-yellow-400" 
               />
               <StatCard 
                 title="Categories" 
                 value={stats.categories} 
-                icon={ChartBarIcon} 
+                icon={BarChart3} 
                 color="bg-purple-500/20 text-purple-400" 
               />
             </div>
@@ -192,9 +194,10 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                   ) : (
                     <div className="text-center py-4">
-                      <div className="text-2xl mb-2">
-                        {electionState.status === 'ended' ? '🏁' : 
-                         electionState.status === 'paused' ? '⏸️' : '⏹️'}
+                      <div className="mb-2 flex justify-center">
+                        {electionState.status === 'ended' ? <Flag className="h-8 w-8 text-slate-400" /> : 
+                         electionState.status === 'paused' ? <Pause className="h-8 w-8 text-slate-400" /> : 
+                         <Square className="h-8 w-8 text-slate-400" />}
                       </div>
                       <p className="text-sm text-slate-400">
                         {electionState.status === 'ended' ? 'Election has concluded' :
@@ -263,7 +266,7 @@ export const AdminDashboard: React.FC = () => {
               onClick={handleLogout}
               className="flex items-center space-x-2 px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition-colors min-h-[44px]"
             >
-              <ArrowRightOnRectangleIcon className="h-4 w-4" />
+              <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Sign Out</span>
             </button>
           </div>
@@ -275,31 +278,35 @@ export const AdminDashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex space-x-1 overflow-x-auto pb-2">
             {[
-              { key: 'dashboard', label: 'Dashboard', icon: '📊' },
-              { key: 'verifications', label: 'Verifications', icon: '✅', badge: stats.pending > 0 ? stats.pending : null },
-              { key: 'candidates', label: 'Candidates', icon: '👥' },
-              { key: 'categories', label: 'Categories', icon: '📂' },
-              { key: 'election', label: 'Election', icon: '🗳️' },
-              ...(admin.role === 'super_admin' ? [{ key: 'admins', label: 'Admins', icon: '👨💼' }] : [])
-            ].map(tab => (
+              { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+              { key: 'verifications', label: 'Verifications', icon: CheckCircle, badge: stats.pending > 0 ? stats.pending : null },
+              { key: 'candidates', label: 'Candidates', icon: Users },
+              { key: 'categories', label: 'Categories', icon: FolderOpen },
+              { key: 'election', label: 'Election', icon: Vote },
+              ...(admin.role === 'super_admin' ? [{ key: 'admins', label: 'Admins', icon: UserCog }] : [])
+            ].map(tab => {
+              const IconComponent = tab.icon;
+              return (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
-                className={`relative flex items-center space-x-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${
+                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${
                   activeTab === tab.key
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-700'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
                 }`}
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
+                <span className="flex items-center space-x-2">
+                  <IconComponent className="h-4 w-4" />
+                  <span>{tab.label}</span>
+                </span>
                 {tab.badge && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {tab.badge}
                   </span>
                 )}
               </button>
-            ))}
+            );})}
           </div>
         </div>
       </div>

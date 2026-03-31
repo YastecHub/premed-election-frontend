@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircleIcon, XCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CheckCircle, XCircle, Clock } from 'lucide-react';
 import { User } from '../../shared/types';
 
 interface RegistrationSuccessPageProps {
@@ -18,8 +18,8 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
         <div className="text-center">
           {isVerified && (
             <>
-              <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-green-700 mb-2">
+              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
                 Registration Successful!
               </h2>
               <p className="text-slate-600 mb-4">
@@ -27,7 +27,7 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
               </p>
               <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
                 <p className="text-sm text-green-800 font-medium">
-                  ✓ You are eligible to vote
+                  <CheckCircle className="h-4 w-4 inline mr-1" /> You are eligible to vote
                 </p>
                 <p className="text-xs text-green-600 mt-2">
                   Matric Number: <span className="font-mono font-bold">{user.matricNumber}</span>
@@ -36,15 +36,20 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
                   Confidence Score: {user.ocrConfidenceScore}%
                 </p>
               </div>
-              <p className="text-sm text-slate-500 mb-6">
-                Come back when the election starts to cast your vote using your matric number.
-              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                <p className="text-sm text-blue-800 font-semibold flex items-center justify-center">
+                  <CheckCircle className="h-4 w-4 mr-1" /> What's Next?
+                </p>
+                <p className="text-xs text-blue-600 mt-2">
+                  Come back when the election starts to cast your vote using your matric number.
+                </p>
+              </div>
             </>
           )}
 
           {isPending && (
             <>
-              <ClockIcon className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+              <Clock className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-yellow-700 mb-2">
                 Pending Review
               </h2>
@@ -52,8 +57,8 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
                 Your registration is under manual review.
               </p>
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                <p className="text-sm text-yellow-800 font-medium">
-                  ⏳ Verification pending
+                <p className="text-sm text-yellow-800 font-medium flex items-center justify-center">
+                  <Clock className="h-4 w-4 mr-1" /> Verification pending
                 </p>
                 <p className="text-xs text-yellow-600 mt-2">
                   Matric Number: <span className="font-mono font-bold">{user.matricNumber}</span>
@@ -72,7 +77,7 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
 
           {isRejected && (
             <>
-              <XCircleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
+              <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-red-700 mb-2">
                 Verification Failed
               </h2>
@@ -80,8 +85,8 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
                 Your registration could not be verified.
               </p>
               <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-                <p className="text-sm text-red-800 font-medium">
-                  ✗ Not eligible to vote
+                <p className="text-sm text-red-800 font-medium flex items-center justify-center">
+                  <XCircle className="h-4 w-4 mr-1" /> Not eligible to vote
                 </p>
                 {user.rejectionReason && (
                   <p className="text-xs text-red-600 mt-2">

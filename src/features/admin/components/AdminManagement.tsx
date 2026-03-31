@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Admin } from '../../../shared/types';
 import { adminService } from '../../../core/services/admin.service';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
-import { PlusIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { Plus, ShieldCheck } from 'lucide-react';
 
 export const AdminManagement: React.FC = () => {
   const { showError, showSuccess } = useNotification();
@@ -48,7 +48,7 @@ export const AdminManagement: React.FC = () => {
           onClick={() => setShowAddForm(!showAddForm)}
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
-          <PlusIcon className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           <span>Add Admin</span>
         </button>
       </div>
@@ -108,7 +108,7 @@ export const AdminManagement: React.FC = () => {
         {admins.map(admin => (
           <div key={admin._id} className="bg-slate-800 rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <ShieldCheckIcon className={`h-6 w-6 ${admin.role === 'super_admin' ? 'text-red-400' : 'text-blue-400'}`} />
+              <ShieldCheck className={`h-6 w-6 ${admin.role === 'super_admin' ? 'text-red-400' : 'text-blue-400'}`} />
               <div>
                 <h3 className="font-semibold">{admin.username}</h3>
                 <p className="text-sm text-slate-400 capitalize">{admin.role.replace('_', ' ')}</p>

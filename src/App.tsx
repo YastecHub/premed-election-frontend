@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { User, RegistrationForm } from './shared/types';
-import { getStepStatus } from './shared/utils';
-import { ROUTES } from './shared/constants';
 import { NotificationProvider } from './shared/contexts/NotificationContext';
+import { VoterLandingPage } from './features/voter/VoterLandingPage';
 import { RegistrationPage } from './features/auth/RegistrationPage';
 import { RegistrationSuccessPage } from './features/auth/RegistrationSuccessPage';
 import { LoginPage } from './features/auth/LoginPage';
@@ -10,72 +9,91 @@ import { VerificationPage } from './features/verification/VerificationPage';
 import { VotingBoothPage } from './features/voting/VotingBoothPage';
 import { AdminDashboard } from './features/admin/AdminDashboard';
 import { Navigation } from './shared/components/Navigation';
-import { ProgressStepper } from './shared/components/ProgressStepper';
 
 type ViewType = 'landing' | 'admin';
-type StepType = 'register' | 'verify' | 'success' | 'login' | 'vote';
+type VoterStepType = 'landing' | 'register' | 'verify' | 'success' | 'login' | 'vote';
 
 function App() {
   const [view, setView] = useState<ViewType>('landing');
-  const [step, setStep] = useState<StepType>('register');
+  const [voterStep, setVoterStep] = useState<VoterStepType>('landing');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [registrationDraft, setRegistrationDraft] = useState<RegistrationForm | null>(null);
-  const [showLoginOption, setShowLoginOption] = useState(true);
+
+  const handleViewChange = (newView: ViewType) => {
+    setView(newView);
+    if (newView === 'landing') {
+      setVoterStep('landing');
+    }
+  };
+
+  const handleNavigateToRegister = () => {
+    setVoterStep('register');
+  };
+
+  const handleNavigateToLogin = () => {
+    setVoterStep('login');
+  };
 
   const handleRegistrationProceed = (draft: RegistrationForm) => {
     setRegistrationDraft(draft);
-    setStep('verify');
+    setVoterStep('verify');
   };
 
   const handleVerificationSuccess = (user: User) => {
     setCurrentUser(user);
-    setStep('success');
+    setVoterStep('success');
   };
 
   const handleRegistrationComplete = () => {
     setCurrentUser(null);
     setRegistrationDraft(null);
-    setStep('login');
+    setVoterStep('landing');
   };
 
   const handleLoginSuccess = (user: User) => {
     setCurrentUser(user);
-    setStep('vote');
+    setVoterStep('vote');
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
     setRegistrationDraft(null);
-    setStep('login');
+    setVoterStep('landing');
   };
 
-  const handleSwitchToRegister = () => {
-    setStep('register');
-  };
-
-  const handleSwitchToLogin = () => {
-    setStep('login');
+  const handleBackToLanding = () => {
+    setVoterStep('landing');
   };
 
   const renderVoterFlow = () => {
-    switch (step) {
+    switch (voterStep) {
+      case 'landing':
+        return (
+          <div className="animate-in fade-in zoom-in-95 duration-700">
+            <VoterLandingPage
+              onNavigateToRegister={handleNavigateToRegister}
+              onNavigateToLogin={handleNavigateToLogin}
+            />
+          </div>
+        );
       case 'register':
         return (
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="max-w-sm mx-auto mb-4">
+              <button
+                onClick={handleBackToLanding}
+                className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Back to Home</span>
+              </button>
+            </div>
             <RegistrationPage
               onProceed={handleRegistrationProceed}
               onSuccess={handleVerificationSuccess}
             />
-            {showLoginOption && (
-              <div className="text-center mt-4">
-                <button
-                  onClick={handleSwitchToLogin}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
-                >
-                  Already registered? Login to vote
-                </button>
-              </div>
-            )}
           </div>
         );
       case 'verify':
@@ -99,15 +117,18 @@ function App() {
       case 'login':
         return (
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <LoginPage onSuccess={handleLoginSuccess} />
-            <div className="text-center mt-4">
+            <div className="max-w-sm mx-auto mb-4">
               <button
-                onClick={handleSwitchToRegister}
-                className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                onClick={handleBackToLanding}
+                className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-1"
               >
-                Not registered yet? Register here
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Back to Home</span>
               </button>
             </div>
+            <LoginPage onSuccess={handleLoginSuccess} />
           </div>
         );
       case 'vote':
@@ -135,8 +156,8 @@ function App() {
         {/* Navigation */}
         <Navigation 
           view={view} 
-          onViewChange={setView}
-          isVisible={view !== 'admin'}
+          onViewChange={handleViewChange}
+          isVisible={true}
         />
 
         {/* Main Content */}
@@ -148,15 +169,7 @@ function App() {
             {view === 'admin' ? (
               <AdminDashboard />
             ) : (
-              <>
-                {(step === 'register' || step === 'verify' || step === 'success') && (
-                  <ProgressStepper 
-                    currentStep={step === 'success' ? 'verify' : step}
-                    getStepStatus={getStepStatus}
-                  />
-                )}
-                {renderVoterFlow()}
-              </>
+              renderVoterFlow()
             )}
           </div>
         </main>

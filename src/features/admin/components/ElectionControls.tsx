@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { votingService } from '../../../core/services/voting.service';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
 import { useElection } from '../../../shared/hooks/useElection';
-import { PlayIcon, PauseIcon, StopIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { Play, Pause, Square, Clock, AlertTriangle } from 'lucide-react';
 
 export const ElectionControls: React.FC = () => {
   const { showError, showSuccess } = useNotification();
@@ -72,7 +72,7 @@ export const ElectionControls: React.FC = () => {
       {/* Duration Settings */}
       <div className="bg-slate-800 rounded-lg p-4 md:p-6">
         <div className="flex items-center space-x-2 mb-4">
-          <ClockIcon className="h-5 w-5 text-blue-400" />
+          <Clock className="h-5 w-5 text-blue-400" />
           <h3 className="text-lg font-semibold text-white">Duration Settings</h3>
         </div>
         
@@ -136,7 +136,7 @@ export const ElectionControls: React.FC = () => {
             disabled={isLoading || electionState.status === 'active' || getTotalMinutes() === 0}
             className="flex items-center justify-center space-x-2 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
           >
-            <PlayIcon className="h-4 w-4" />
+            <Play className="h-4 w-4" />
             <span>Start Election</span>
           </button>
           
@@ -145,7 +145,7 @@ export const ElectionControls: React.FC = () => {
             disabled={isLoading || electionState.status !== 'active'}
             className="flex items-center justify-center space-x-2 px-4 py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
           >
-            <PauseIcon className="h-4 w-4" />
+            <Pause className="h-4 w-4" />
             <span>Pause Election</span>
           </button>
           
@@ -154,7 +154,7 @@ export const ElectionControls: React.FC = () => {
             disabled={isLoading || electionState.status !== 'paused'}
             className="flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
           >
-            <PlayIcon className="h-4 w-4" />
+            <Play className="h-4 w-4" />
             <span>Resume Election</span>
           </button>
           
@@ -163,7 +163,7 @@ export const ElectionControls: React.FC = () => {
             disabled={isLoading || electionState.status === 'ended'}
             className="flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
           >
-            <StopIcon className="h-4 w-4" />
+            <Square className="h-4 w-4" />
             <span>Stop Election</span>
           </button>
         </div>
@@ -200,13 +200,19 @@ export const ElectionControls: React.FC = () => {
       
       {electionState.status === 'paused' && (
         <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
-          <p className="text-yellow-400 font-medium">⏸️ Election is paused. Voters cannot submit votes at this time.</p>
+          <div className="flex items-center space-x-2">
+            <Pause className="h-5 w-5 text-yellow-400" />
+            <p className="text-yellow-400 font-medium">Election is paused. Voters cannot submit votes at this time.</p>
+          </div>
         </div>
       )}
       
       {getTotalMinutes() === 0 && (
         <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
-          <p className="text-red-400 font-medium">⚠️ Please set a valid duration before starting the election.</p>
+          <div className="flex items-center space-x-2">
+            <AlertTriangle className="h-5 w-5 text-red-400" />
+            <p className="text-red-400 font-medium">Please set a valid duration before starting the election.</p>
+          </div>
         </div>
       )}
     </div>

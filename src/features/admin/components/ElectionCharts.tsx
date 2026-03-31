@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Candidate } from '../../../shared/types';
+import { BarChart3 } from 'lucide-react';
 
 interface ElectionChartsProps {
   candidates: Candidate[];
@@ -88,7 +89,7 @@ export const ElectionCharts: React.FC<ElectionChartsProps> = ({ candidates }) =>
           ) : (
             <div className="flex items-center justify-center h-full text-slate-400">
               <div className="text-center">
-                <div className="text-4xl mb-2">📊</div>
+                <BarChart3 className="h-10 w-10 mx-auto mb-2" />
                 <p className="text-sm">No votes yet</p>
               </div>
             </div>

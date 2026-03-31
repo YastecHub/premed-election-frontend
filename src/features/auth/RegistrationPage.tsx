@@ -44,10 +44,10 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onProceed, o
       <div className="glass-panel relative rounded-2xl md:rounded-3xl shadow-2xl p-4 md:p-8 border-white/50 w-full">
         <div className="text-center mb-6">
           <h2 className="text-xl md:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-600">
-            Student Portal
+            Register & Verify
           </h2>
           <p className="text-slate-500 mt-2 text-xs md:text-sm font-medium">
-            Create your profile to access the ballot.
+            Create your profile and verify your identity.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onProceed, o
                 onClick={() => setUseAccessCode(true)}
                 className="w-full text-xs md:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors py-3 min-h-[44px]"
               >
-                No Matric Number? Use Access Code
+                Have an Access Code? Use it here
               </button>
             </div>
           </>
@@ -79,7 +79,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onProceed, o
                 onClick={() => setUseAccessCode(false)}
                 className="w-full text-xs md:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors py-3 min-h-[44px]"
               >
-                Have a Matric Number? Go Back
+                Use Matric Number Instead
               </button>
             </div>
           </>

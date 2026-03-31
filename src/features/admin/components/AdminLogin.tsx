@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { User, Lock } from 'lucide-react';
 import { AdminLoginForm } from '../../../shared/types';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
 
@@ -49,7 +49,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSubmit, isLoading = fa
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <UserIcon className="h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <User className="h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               </div>
               <input
                 type="text"
@@ -68,7 +68,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSubmit, isLoading = fa
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <LockClosedIcon className="h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <Lock className="h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               </div>
               <input
                 type="password"

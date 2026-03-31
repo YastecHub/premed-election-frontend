@@ -2,7 +2,7 @@ import React from 'react';
 import { User } from '../../../shared/types';
 import { adminService } from '../../../core/services/admin.service';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Check, X } from 'lucide-react';
 
 interface PendingVerificationsProps {
   users: User[];
@@ -54,14 +54,14 @@ export const PendingVerifications: React.FC<PendingVerificationsProps> = ({ user
                 className="p-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
                 title="Approve"
               >
-                <CheckIcon className="h-4 w-4" />
+                <Check className="h-4 w-4" />
               </button>
               <button
                 onClick={() => handleReject(user._id)}
                 className="p-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                 title="Reject"
               >
-                <XMarkIcon className="h-4 w-4" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
