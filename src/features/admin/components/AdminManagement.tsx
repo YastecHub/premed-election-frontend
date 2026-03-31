@@ -58,33 +58,45 @@ export const AdminManagement: React.FC = () => {
           <h3 className="text-lg font-semibold">Create New Admin</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Username"
-              value={newAdmin.username}
-              onChange={(e) => setNewAdmin(prev => ({ ...prev, username: e.target.value }))}
-              className="px-3 py-2 bg-slate-700 rounded-lg text-white"
-              required
-            />
+            <div>
+              <label htmlFor="admin-username" className="block text-sm font-medium text-slate-300 mb-1">Username</label>
+              <input
+                id="admin-username"
+                type="text"
+                placeholder="Username"
+                value={newAdmin.username}
+                onChange={(e) => setNewAdmin(prev => ({ ...prev, username: e.target.value }))}
+                className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white"
+                required
+              />
+            </div>
             
-            <input
-              type="password"
-              placeholder="Password"
-              value={newAdmin.password}
-              onChange={(e) => setNewAdmin(prev => ({ ...prev, password: e.target.value }))}
-              className="px-3 py-2 bg-slate-700 rounded-lg text-white"
-              required
-            />
+            <div>
+              <label htmlFor="admin-password" className="block text-sm font-medium text-slate-300 mb-1">Password</label>
+              <input
+                id="admin-password"
+                type="password"
+                placeholder="Password"
+                value={newAdmin.password}
+                onChange={(e) => setNewAdmin(prev => ({ ...prev, password: e.target.value }))}
+                className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white"
+                required
+              />
+            </div>
           </div>
           
-          <select
-            value={newAdmin.role}
-            onChange={(e) => setNewAdmin(prev => ({ ...prev, role: e.target.value as 'moderator' | 'super_admin' }))}
-            className="px-3 py-2 bg-slate-700 rounded-lg text-white"
-          >
-            <option value="moderator">Moderator</option>
-            <option value="super_admin">Super Admin</option>
-          </select>
+          <div>
+            <label htmlFor="admin-role" className="block text-sm font-medium text-slate-300 mb-1">Role</label>
+            <select
+              id="admin-role"
+              value={newAdmin.role}
+              onChange={(e) => setNewAdmin(prev => ({ ...prev, role: e.target.value as 'moderator' | 'super_admin' }))}
+              className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white"
+            >
+              <option value="moderator">Moderator</option>
+              <option value="super_admin">Super Admin</option>
+            </select>
+          </div>
           
           <div className="flex space-x-4">
             <button

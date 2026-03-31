@@ -79,38 +79,44 @@ export const ElectionControls: React.FC = () => {
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Days</label>
+              <label htmlFor="election-days" className="block text-sm font-medium text-slate-300 mb-2">Days</label>
               <input
+                id="election-days"
                 type="number"
                 value={days}
                 onChange={(e) => setDays(Math.max(0, Number(e.target.value)))}
                 className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white min-h-[44px]"
                 min="0"
                 max="30"
+                aria-label="Election duration in days"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Hours</label>
+              <label htmlFor="election-hours" className="block text-sm font-medium text-slate-300 mb-2">Hours</label>
               <input
+                id="election-hours"
                 type="number"
                 value={hours}
                 onChange={(e) => setHours(Math.max(0, Math.min(23, Number(e.target.value))))}
                 className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white min-h-[44px]"
                 min="0"
                 max="23"
+                aria-label="Election duration in hours"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Minutes</label>
+              <label htmlFor="election-minutes" className="block text-sm font-medium text-slate-300 mb-2">Minutes</label>
               <input
+                id="election-minutes"
                 type="number"
                 value={minutes}
                 onChange={(e) => setMinutes(Math.max(0, Math.min(59, Number(e.target.value))))}
                 className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white min-h-[44px]"
                 min="0"
                 max="59"
+                aria-label="Election duration in minutes"
               />
             </div>
           </div>
