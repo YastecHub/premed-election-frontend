@@ -14,6 +14,10 @@ export class AuthService {
     return apiClient.post<User>('/login-with-code', data);
   }
 
+  async loginWithMatric(matricNumber: string): Promise<User> {
+    return apiClient.post<User>('/login', { matricNumber });
+  }
+
   async verifyUser(userId: string, file: File): Promise<User> {
     const formData = new FormData();
     formData.append('userId', userId);
