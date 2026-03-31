@@ -89,7 +89,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             ref={inputRef}
             type="file"
             accept={acceptedTypes.join(',')}
-            capture="environment"
             onChange={handleFileSelect}
             className="hidden"
             id="file-upload"

@@ -145,6 +145,7 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
           </a>
         </div>
       </div>
+      </div>
     </>
   );
 };
