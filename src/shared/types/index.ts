@@ -1,4 +1,4 @@
-export type VerificationStatus = 'unverified' | 'verified' | 'pending_manual_review' | 'rejected' | 'pending';
+export type VerificationStatus = 'unverified' | 'verified' | 'pending_manual_review' | 'rejected';
 export type ElectionStatus = 'not_started' | 'active' | 'paused' | 'ended';
 export type AdminRole = 'super_admin' | 'moderator';
 

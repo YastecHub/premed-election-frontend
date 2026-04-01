@@ -35,7 +35,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onStatusChan
 
   const getStatusBadge = () => {
     switch (currentUser.verificationStatus) {
-      case 'pending':
+      case 'pending_manual_review':
         return (
           <div className="flex items-center space-x-2 bg-yellow-100 text-yellow-800 px-4 py-3 rounded-lg">
             <ClockIcon className="h-5 w-5" />
@@ -93,7 +93,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, onStatusChan
 
         {getStatusBadge()}
 
-        {currentUser.verificationStatus === 'pending' && (
+        {currentUser.verificationStatus === 'pending_manual_review' && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
               <strong>What's happening?</strong><br />

@@ -2,209 +2,235 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Reset default margins and padding */
+/* ─── Reset ──────────────────────────────────────────────── */
 body, html {
   margin: 0;
   padding: 0;
 }
 
-/* Custom Styles */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.8);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* ─── Design Tokens ──────────────────────────────────────── */
+:root {
+  --bg:      #09090b; /* zinc-950 */
+  --surface: #18181b; /* zinc-900 */
+  --elevated:#27272a; /* zinc-800 */
+  --border:  #3f3f46; /* zinc-700 */
+  --muted:   #71717a; /* zinc-500 */
+  --text:    #f4f4f5; /* zinc-100  */
+  --brand:   #8b5cf6; /* violet-500 */
+  --accent:  #22d3ee; /* cyan-400  */
 }
 
-.mesh-bg-light {
+/* ─── Dot Pattern Background ─────────────────────────────── */
+.dot-bg {
+  background-color: #09090b;
+  background-image: radial-gradient(circle, rgba(113,113,122,0.22) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Ambient glow overlaid on dot-bg */
+.dot-bg::before {
+  content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  opacity: 0.1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(139,92,246,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 30% at 90% 110%,  rgba(34,211,238,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.mesh-bg-light::before {
+/* ─── Glass Panels ───────────────────────────────────────── */
+
+/* Light glass – used for voter auth forms (white card on dark bg) */
+.glass-panel {
+  background: rgba(255,255,255,0.92);
+  -webkit-backdrop-filter: blur(24px);
+          backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* Dark glass – used for booth header, status widgets */
+.glass-dark {
+  background: rgba(24,24,27,0.85);
+  -webkit-backdrop-filter: blur(24px);
+          backdrop-filter: blur(24px);
+  border: 1px solid rgba(63,63,70,0.5);
+}
+
+/* ─── Bento Card ─────────────────────────────────────────── */
+.bento-card {
+  background: rgba(24,24,27,0.80);
+  border: 1px solid rgba(63,63,70,0.5);
+  border-radius: 1.25rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.bento-card:hover {
+  border-color: rgba(139,92,246,0.35);
+  box-shadow: 0 0 0 1px rgba(139,92,246,0.12), 0 12px 40px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+.bento-card.active-card {
+  border-color: rgba(139,92,246,0.6);
+  box-shadow: 0 0 0 2px rgba(139,92,246,0.2), 0 0 30px rgba(139,92,246,0.15);
+}
+
+/* ─── Shimmer Loading ────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(39,39,42,0)   0%,
+    rgba(63,63,70,0.5) 45%,
+    rgba(63,63,70,0.7) 50%,
+    rgba(39,39,42,0)   100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+
+/* Skeleton placeholder */
+.skeleton {
+  background: #27272a;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+}
+.skeleton::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(63,63,70,0.5) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
 }
 
-@keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
+/* ─── Glow Helpers ───────────────────────────────────────── */
+.glow-violet { box-shadow: 0 0 22px rgba(139,92,246,0.3), 0 0 50px rgba(139,92,246,0.1); }
+.glow-cyan   { box-shadow: 0 0 22px rgba(34,211,238,0.3),  0 0 50px rgba(34,211,238,0.1);  }
+.glow-green  { box-shadow: 0 0 22px rgba(52,211,153,0.3); }
+
+/* ─── Animated Spinning Border ───────────────────────────── */
+.spin-border {
+  position: relative;
+  isolation: isolate;
+}
+.spin-border::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, #8b5cf6 0%, #22d3ee 40%, #8b5cf6 100%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+  animation: borderSpin 3s linear infinite;
+}
+.spin-border:hover::before,
+.spin-border.is-active::before {
+  opacity: 1;
 }
 
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-/* Progress bar with dynamic width - used in stepper */
+/* ─── Progress Indicator (stepper) ──────────────────────── */
 .progress-indicator {
   position: absolute;
   top: 50%;
   left: 0;
-  height: 0.125rem;
-  background-color: #3b82f6;
+  height: 2px;
+  background: linear-gradient(90deg, #8b5cf6, #22d3ee);
   z-index: -10;
   transform: translateY(-50%);
   border-radius: 9999px;
-  transition: width 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 700ms cubic-bezier(0.4,0,0.2,1);
 }
-
-.progress-indicator-0 { width: 0%; }
-.progress-indicator-50 { width: 50%; }
+.progress-indicator-0   { width: 0%; }
+.progress-indicator-50  { width: 50%; }
 .progress-indicator-100 { width: 100%; }
 
-.animation-delay-2000 {
-  animation-delay: 2s;
+/* ─── Scrollbar ──────────────────────────────────────────── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+::-webkit-scrollbar              { width: 5px; height: 5px; }
+::-webkit-scrollbar-track        { background: #18181b; }
+::-webkit-scrollbar-thumb        { background: #3f3f46; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover  { background: #52525b; }
+
+/* ─── Animation Utilities ────────────────────────────────── */
+.animate-in                 { animation-fill-mode: both; }
+.animate-blob               { animation: blob 7s infinite; }
+
+.fade-in                    { animation: fadeIn 0.5s ease-out; }
+.slide-in-from-bottom-2     { animation: slideInBottom2 0.45s cubic-bezier(0.16,1,0.3,1); }
+.slide-in-from-bottom-4     { animation: slideInBottom4 0.5s  cubic-bezier(0.16,1,0.3,1); }
+.slide-in-from-bottom-8     { animation: slideInBottom8 0.6s  cubic-bezier(0.16,1,0.3,1); }
+.slide-in-from-left         { animation: slideInLeft   0.5s  cubic-bezier(0.16,1,0.3,1); }
+.slide-in-from-right        { animation: slideInRight  0.5s  cubic-bezier(0.16,1,0.3,1); }
+.zoom-in-95                 { animation: zoomIn95      0.4s  cubic-bezier(0.16,1,0.3,1); }
+.spin-in-90                 { animation: spinIn90      0.3s  ease-out; }
+.spin-in-12                 { animation: spinIn12      0.3s  ease-out; }
+
+.animation-delay-100  { animation-delay: 100ms; }
+.animation-delay-200  { animation-delay: 200ms; }
+.animation-delay-300  { animation-delay: 300ms; }
+.animation-delay-2000 { animation-delay: 2s; }
+
+@keyframes fadeIn         { from{opacity:0}         to{opacity:1} }
+@keyframes slideInBottom2 { from{transform:translateY(.5rem);opacity:0}  to{transform:none;opacity:1} }
+@keyframes slideInBottom4 { from{transform:translateY(1rem);opacity:0}   to{transform:none;opacity:1} }
+@keyframes slideInBottom8 { from{transform:translateY(2rem);opacity:0}   to{transform:none;opacity:1} }
+@keyframes slideInLeft    { from{transform:translateX(-1.5rem);opacity:0} to{transform:none;opacity:1} }
+@keyframes slideInRight   { from{transform:translateX(1.5rem);opacity:0}  to{transform:none;opacity:1} }
+@keyframes zoomIn95       { from{transform:scale(.95);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes spinIn90       { from{transform:rotate(-90deg) scale(0);opacity:0} to{transform:none;opacity:1} }
+@keyframes spinIn12       { from{transform:rotate(-12deg) scale(.6);opacity:0} to{transform:none;opacity:1} }
+@keyframes shimmer        { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes borderSpin     { to{transform:rotate(360deg)} }
+@keyframes pulseGlow      { 0%,100%{opacity:.5} 50%{opacity:1} }
+@keyframes blob {
+  0%  { transform:translate(0,0) scale(1); }
+  33% { transform:translate(30px,-50px) scale(1.1); }
+  66% { transform:translate(-20px,20px) scale(.9); }
+  100%{ transform:translate(0,0) scale(1); }
 }
 
-/* Tailwind Animation Extensions */
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 3s linear infinite;
-}
-
-/* Line clamp utilities */
+/* ─── Line Clamp ─────────────────────────────────────────── */
 .line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
 }
-
 .line-clamp-4 {
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
 }
 
-/* Mobile-first responsive design */
-@media (max-width: 768px) {
-  .glass-panel {
-    margin: 0 1rem;
-    padding: 1.5rem;
-  }
-  
-  .mesh-bg-light::before {
-    background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.2) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 40%),
-                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.2) 0%, transparent 40%);
-  }
-}
-
-/* Touch-friendly button sizes */
-@media (max-width: 768px) {
-  button {
+/* ─── Touch / Mobile ─────────────────────────────────────── */
+@media (max-width:768px) {
+  button              { min-height:44px; }
+  input,select,textarea {
     min-height: 44px;
-    padding: 0.75rem 1rem;
+    font-size:  16px; /* Prevents iOS zoom */
   }
-  
-  input, select, textarea {
-    min-height: 44px;
-    font-size: 16px; /* Prevents zoom on iOS */
-  }
+  /* Content area clears the bottom dock */
+  .pb-safe { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
 }
 
-/* Hide site navigation when app is in admin view (added class to body) */
-.admin-view #site-navigation {
-  display: none !important;
+/* ─── Reduced Motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce) {
+  .animate-blob,
+  .shimmer,
+  .spin-border::before { animation:none; }
 }
 
-/* Improved mobile animations */
-@media (prefers-reduced-motion: no-preference) {
-  .animate-blob {
-    animation: blob 10s infinite;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-blob {
-    animation: none;
-  }
-}
-
-/* Animation utilities */
-.animate-in {
-  animation-fill-mode: both;
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-out;
-}
-
-.slide-in-from-bottom-2 {
-  animation: slideInFromBottom2 0.5s ease-out;
-}
-
-.slide-in-from-bottom-4 {
-  animation: slideInFromBottom4 0.5s ease-out;
-}
-
-.slide-in-from-bottom-8 {
-  animation: slideInFromBottom8 0.5s ease-out;
-}
-
-.zoom-in-95 {
-  animation: zoomIn95 0.5s ease-out;
-}
-
-.spin-in-90 {
-  animation: spinIn90 0.3s ease-out;
-}
-
-.spin-in-12 {
-  animation: spinIn12 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideInFromBottom2 {
-  from { transform: translateY(0.5rem); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes slideInFromBottom4 {
-  from { transform: translateY(1rem); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes slideInFromBottom8 {
-  from { transform: translateY(2rem); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes zoomIn95 {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes spinIn90 {
-  from { transform: rotate(-90deg) scale(0); opacity: 0; }
-  to { transform: rotate(0deg) scale(1); opacity: 1; }
-}
-
-@keyframes spinIn12 {
-  from { transform: rotate(-12deg) scale(0); opacity: 0; }
-  to { transform: rotate(0deg) scale(1); opacity: 1; }
-}
+/* ─── Admin Navigation ───────────────────────────────────── */
+.admin-view #site-navigation { display:none !important; }

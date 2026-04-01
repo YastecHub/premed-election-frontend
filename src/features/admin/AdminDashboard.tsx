@@ -84,15 +84,16 @@ export const AdminDashboard: React.FC = () => {
     return <AdminLogin onSubmit={handleLogin} isLoading={isLoading} />;
   }
 
-  const StatCard = ({ title, value, icon: Icon, color }: { title: string; value: number; icon: any; color: string }) => (
-    <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-      <div className="flex items-center justify-between gap-3">
+  const StatCard = ({ title, value, icon: Icon, color, glow }: { title: string; value: number; icon: any; color: string; glow?: string }) => (
+    <div className={`relative overflow-hidden rounded-xl p-4 border border-zinc-700/50 bg-zinc-900 transition-all duration-200 hover:border-zinc-600/70 group`}>
+      {glow && <div className={`pointer-events-none absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20 group-hover:opacity-35 transition-opacity ${glow}`} />}
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-xs sm:text-sm text-slate-400 truncate mb-1">{title}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-white">{value}</p>
+          <p className="text-xs text-zinc-500 font-medium truncate mb-2 uppercase tracking-wider">{title}</p>
+          <p className="text-2xl sm:text-3xl font-extrabold text-zinc-100 tabular-nums">{value}</p>
         </div>
-        <div className={`p-3 rounded-lg flex-shrink-0 ${color}`}>
-          <Icon className="h-6 w-6" />
+        <div className={`p-2.5 rounded-lg flex-shrink-0 ${color}`}>
+          <Icon className="h-5 w-5" />
         </div>
       </div>
     </div>
@@ -140,31 +141,35 @@ export const AdminDashboard: React.FC = () => {
         const rankings = calculateRankings(candidates);
         return (
           <div className="space-y-4 sm:space-y-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <StatCard 
-                title="Total Candidates" 
-                value={stats.users} 
-                icon={Users} 
-                color="bg-blue-500/20 text-blue-400" 
+            {/* Stats Bento */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <StatCard
+                title="Candidates"
+                value={stats.users}
+                icon={Users}
+                color="bg-violet-500/15 text-violet-400"
+                glow="bg-violet-500"
               />
-              <StatCard 
-                title="Total Votes" 
-                value={stats.votes} 
-                icon={CheckCircle} 
-                color="bg-green-500/20 text-green-400" 
+              <StatCard
+                title="Total Votes"
+                value={stats.votes}
+                icon={CheckCircle}
+                color="bg-emerald-500/15 text-emerald-400"
+                glow="bg-emerald-500"
               />
-              <StatCard 
-                title="Pending Verifications" 
-                value={stats.pending} 
-                icon={UserCheck} 
-                color="bg-yellow-500/20 text-yellow-400" 
+              <StatCard
+                title="Pending"
+                value={stats.pending}
+                icon={UserCheck}
+                color="bg-amber-500/15 text-amber-400"
+                glow="bg-amber-500"
               />
-              <StatCard 
-                title="Categories" 
-                value={stats.categories} 
-                icon={BarChart3} 
-                color="bg-purple-500/20 text-purple-400" 
+              <StatCard
+                title="Categories"
+                value={stats.categories}
+                icon={BarChart3}
+                color="bg-cyan-500/15 text-cyan-400"
+                glow="bg-cyan-500"
               />
             </div>
 
@@ -216,8 +221,9 @@ export const AdminDashboard: React.FC = () => {
                       {stats.pending} user{stats.pending !== 1 ? 's' : ''} waiting for verification
                     </p>
                     <button
+                      type="button"
                       onClick={() => setActiveTab('verifications')}
-                      className="w-full px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-medium transition-colors min-h-[44px]"
+                      className="w-full px-3 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
                       aria-label="Review pending verifications"
                     >
                       Review Verifications
@@ -243,6 +249,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex items-center justify-between gap-2">
             <h1 className="text-base sm:text-lg md:text-xl font-bold text-white truncate">Admin Dashboard</h1>
             <button
+              type="button"
               onClick={handleLogout}
               className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[44px] flex-shrink-0"
               aria-label="Logout"
@@ -278,48 +285,87 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="bg-slate-800/50 border-b border-slate-700 overflow-x-auto scrollbar-hide">
+      {/* Desktop Tab Bar — hidden on mobile */}
+      <div className="hidden sm:block bg-zinc-900/60 border-b border-zinc-700/50 overflow-x-auto scrollbar-hide">
         <div className="max-w-7xl mx-auto px-3 py-2">
           <div className="flex space-x-1 min-w-max">
             {[
-              { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+              { key: 'dashboard',     label: 'Dashboard',     icon: LayoutDashboard },
               { key: 'verifications', label: 'Verifications', icon: CheckCircle, badge: stats.pending > 0 ? stats.pending : null },
-              { key: 'candidates', label: 'Candidates', icon: Users },
-              { key: 'categories', label: 'Categories', icon: FolderOpen },
-              { key: 'election', label: 'Election', icon: Vote },
-              ...(admin.role === 'super_admin' ? [{ key: 'admins', label: 'Admins', icon: UserCog }] : [])
+              { key: 'candidates',    label: 'Candidates',    icon: Users },
+              { key: 'categories',    label: 'Categories',    icon: FolderOpen },
+              { key: 'election',      label: 'Election',      icon: Vote },
+              ...(admin.role === 'super_admin' ? [{ key: 'admins', label: 'Admins', icon: UserCog }] : []),
             ].map(tab => {
               const IconComponent = tab.icon;
               return (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`relative px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] flex items-center space-x-2 flex-shrink-0 ${
-                  activeTab === tab.key
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
-                }`}
-                title={tab.label}
-                aria-label={tab.label}
-              >
-                <IconComponent className="h-4 w-4 flex-shrink-0" />
-                <span>{tab.label}</span>
-                {tab.badge && (
-                  <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {tab.badge}
-                  </span>
-                )}
-              </button>
-            );})}
+                <button
+                  type="button"
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key as any)}
+                  className={`relative px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] flex items-center space-x-2 flex-shrink-0 ${
+                    activeTab === tab.key
+                      ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/20'
+                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
+                  }`}
+                  aria-label={tab.label}
+                >
+                  <IconComponent className="h-4 w-4 flex-shrink-0" />
+                  <span>{tab.label}</span>
+                  {tab.badge && (
+                    <span className="bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="p-4 sm:p-6 bg-slate-900">
+      <div className="p-4 sm:p-6 pb-24 sm:pb-6 bg-zinc-950 min-h-screen">
         <div className="max-w-7xl mx-auto">
           {renderTabContent()}
+        </div>
+      </div>
+
+      {/* Mobile Bottom Dock — visible on small screens only */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-zinc-900/95 backdrop-blur-xl border-t border-zinc-700/50">
+        <div className="grid grid-cols-5 h-16">
+          {[
+            { key: 'dashboard',     label: 'Home',    icon: LayoutDashboard },
+            { key: 'verifications', label: 'Verify',  icon: UserCheck,  badge: stats.pending > 0 ? stats.pending : null },
+            { key: 'candidates',    label: 'Cands',   icon: Users },
+            { key: 'election',      label: 'Election',icon: Vote },
+            { key: 'categories',    label: 'Cats',    icon: FolderOpen },
+          ].map(tab => {
+            const IconComponent = tab.icon;
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                type="button"
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as any)}
+                className={`relative flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                  isActive ? 'text-violet-400' : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+                aria-label={tab.label}
+              >
+                <div className="relative">
+                  <IconComponent className="h-5 w-5" />
+                  {tab.badge && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold">
+                      {tab.badge > 9 ? '9+' : tab.badge}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[9px] font-semibold">{tab.label}</span>
+                {isActive && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-violet-400" />}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

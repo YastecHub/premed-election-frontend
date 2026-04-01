@@ -8,14 +8,13 @@ import { CandidateCard } from './components/CandidateCard';
 import { VoteConfirmationModal } from './components/VoteConfirmationModal';
 import { ElectionStatusScreen } from './components/ElectionStatusScreen';
 import { CountdownTimer } from '../../shared/components/CountdownTimer';
-import { ShieldCheck } from 'lucide-react';
+import { LoadingSpinner } from '../../shared/components/LoadingSpinner';
+import { ShieldCheck, ChevronDown } from 'lucide-react';
 
 interface VotingBoothPageProps {
   user: User;
   onLogout: () => void;
 }
-
-import { LoadingSpinner } from '../../shared/components/LoadingSpinner';
 
 export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout }) => {
   const { showError } = useNotification();
@@ -29,11 +28,10 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Delay API call to not block initial render
     const timer = setTimeout(() => {
       Promise.all([
         votingService.getCandidates(),
-        categoryService.getCategories()
+        categoryService.getCategories(),
       ])
         .then(([candidatesData, categoriesData]) => {
           setCandidates(candidatesData);
@@ -42,7 +40,6 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
         .catch(e => showError(e.message || 'Failed to load candidates. Please refresh the page.'))
         .finally(() => setIsLoading(false));
     }, 200);
-
     return () => clearTimeout(timer);
   }, [showError]);
 
@@ -65,11 +62,7 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
       }
     } catch (e: any) {
       const error = e as ApiError;
-      if (error.code === 'IP_BLACKLISTED' || error.message?.includes('already voted from this device')) {
-        showError('You have already voted from this device/network. Each device can only vote once during this election.');
-      } else {
-        showError(error.message || 'Failed to cast vote. Please try again.');
-      }
+      showError(error.message || 'Failed to cast vote. Please try again.');
       setShowConfirmation(false);
     } finally {
       setIsSubmitting(false);
@@ -78,20 +71,18 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
 
   const selectedCandidateData = candidates.find(c => c._id === selectedCandidate);
 
-  // Show loading while fetching candidates
   if (isLoading) {
     return (
-      <div className="glass-panel rounded-3xl p-8 text-center max-w-md mx-auto">
-        <h2 className="text-xl font-bold mb-4">Loading Ballot...</h2>
+      <div className="glass-dark rounded-2xl p-8 text-center max-w-md mx-auto border border-zinc-700/50">
+        <p className="text-zinc-300 font-semibold mb-4 text-sm uppercase tracking-wider">Loading Ballot…</p>
         <LoadingSpinner />
       </div>
     );
   }
 
-  // Show status screens for non-voting states
   if (hasVoted || electionState.status === 'not_started' || electionState.status === 'paused' || electionState.status === 'ended') {
     return (
-      <ElectionStatusScreen 
+      <ElectionStatusScreen
         user={{ ...user, hasVoted }}
         electionState={electionState}
         onLogout={onLogout}
@@ -101,53 +92,67 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
 
   return (
     <div className="pb-32 relative">
-      <div className="glass-panel rounded-3xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center shadow-lg border-white/60 text-center md:text-left gap-4">
-        <div className="mb-4 md:mb-0">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
-            Official Ballot
-          </h1>
-          <p className="text-slate-500 font-medium text-sm md:text-base">
-            Select your choice for <span className="text-blue-600">Pre-Med Governor</span>
-          </p>
-        </div>
-        
-        {electionState.endTime && (
-          <div className="w-full md:w-auto md:min-w-[250px]">
-            <CountdownTimer 
-              targetDate={electionState.endTime}
-              isActive={electionState.isActive}
-              isPaused={electionState.isPaused}
-            />
+
+      {/* Ballot header */}
+      <div className="glass-dark rounded-2xl p-4 sm:p-5 mb-8 border border-zinc-700/50 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+          {/* Title */}
+          <div>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-zinc-100 tracking-tight">
+              Official Ballot
+            </h1>
+            <p className="text-zinc-400 text-sm mt-0.5">
+              Select your candidate for each position below
+            </p>
           </div>
-        )}
-        
-        <div className="flex items-center space-x-3 bg-white/50 px-4 py-2 rounded-2xl border border-white shadow-sm shrink-0">
-          <div className="h-2 w-2 bg-emerald-500 rounded-full animate-ping"></div>
-          <div className="text-right">
-            <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Security Active</div>
-            <div className="text-xs font-bold text-emerald-600">Anti-Fraud Enabled</div>
+
+          {/* Countdown */}
+          {electionState.endTime && (
+            <div className="w-full sm:w-auto sm:min-w-[220px]">
+              <CountdownTimer
+                targetDate={electionState.endTime}
+                isActive={electionState.isActive}
+                isPaused={electionState.isPaused}
+              />
+            </div>
+          )}
+
+          {/* Security badge */}
+          <div className="hidden md:flex items-center gap-2.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 rounded-xl shrink-0">
+            <div className="h-2 w-2 bg-emerald-400 rounded-full animate-pulse" />
+            <div>
+              <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Anti-Fraud</p>
+              <p className="text-[10px] text-emerald-400">Active</p>
+            </div>
+            <ShieldCheck className="h-5 w-5 text-emerald-400" />
           </div>
-          <ShieldCheck className="h-8 w-8 text-emerald-500 opacity-80" />
         </div>
       </div>
 
-      {/* Group candidates by category */}
-      <div className="space-y-8">
+      {/* Candidates grouped by category */}
+      <div className="space-y-10">
         {categories.map(category => {
           const categoryCandidates = candidates.filter(c => c.categoryId === category._id);
           if (categoryCandidates.length === 0) return null;
-          
+
           return (
-            <div key={category._id}>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-slate-800">{category.name}</h2>
-                {category.description && (
-                  <p className="text-slate-600 text-sm mt-1">{category.description}</p>
-                )}
+            <section key={category._id}>
+              {/* Category heading */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-px flex-1 bg-zinc-800" />
+                <h2 className="text-sm font-bold text-zinc-300 uppercase tracking-widest whitespace-nowrap">
+                  {category.name}
+                </h2>
+                <div className="h-px flex-1 bg-zinc-800" />
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                {categoryCandidates.map((candidate) => (
+
+              {category.description && (
+                <p className="text-zinc-500 text-sm text-center mb-4">{category.description}</p>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                {categoryCandidates.map(candidate => (
                   <CandidateCard
                     key={candidate._id}
                     candidate={candidate}
@@ -156,25 +161,31 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
                   />
                 ))}
               </div>
-            </div>
+            </section>
           );
         })}
       </div>
 
-      <div className="fixed bottom-8 left-0 right-0 flex justify-center z-40 pointer-events-none px-4">
-        <div className="pointer-events-auto transition-all duration-500 transform w-full md:w-auto">
+      {/* Scroll hint when a candidate is selected */}
+      {selectedCandidate && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 text-xs text-zinc-500 pointer-events-none animate-bounce">
+          <ChevronDown className="h-3.5 w-3.5" />
+          <span>Scroll to vote button</span>
+        </div>
+      )}
+
+      {/* Fixed Vote CTA */}
+      <div className="fixed bottom-6 left-0 right-0 flex justify-center z-40 px-4 pointer-events-none">
+        <div className={`pointer-events-auto transition-all duration-500 w-full max-w-sm ${
+          selectedCandidate ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'
+        }`}>
           <button
+            type="button"
             onClick={handleVoteClick}
             disabled={!selectedCandidate || isSubmitting}
-            className={`
-              w-full md:w-auto px-8 md:px-10 py-4 md:py-5 rounded-full text-base md:text-lg font-bold text-white shadow-2xl transition-all duration-300 flex items-center justify-center space-x-3
-              ${!selectedCandidate
-                ? 'bg-slate-400 cursor-not-allowed translate-y-20 opacity-0' 
-                : 'bg-gradient-to-r from-blue-600 to-indigo-700 hover:scale-105 active:scale-95 translate-y-0 opacity-100'
-              }
-            `}
+            className="w-full py-4 rounded-2xl font-bold text-white bg-violet-600 hover:bg-violet-500 active:scale-95 shadow-2xl shadow-violet-500/30 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>Review Selection & Vote</span>
+            {isSubmitting ? 'Submitting…' : 'Review Selection & Vote'}
           </button>
         </div>
       </div>

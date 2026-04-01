@@ -6,42 +6,57 @@ interface NavigationProps {
   isVisible: boolean;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ view, onViewChange, isVisible }) => {
+export const Navigation: React.FC<NavigationProps> = ({ view, onViewChange }) => {
   return (
-    <nav id="site-navigation" className="fixed top-2 left-0 right-0 z-50 transition-all duration-300">
-      <div className="max-w-2xl mx-auto px-2 sm:px-4">
-        <div className="glass-panel rounded-full shadow-lg shadow-blue-900/5 px-3 sm:px-4 md:px-6 py-2 sm:py-2 md:py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-1 sm:space-x-2 cursor-pointer" onClick={() => onViewChange('landing')}>
-            <div className="h-6 w-6 sm:h-8 sm:w-8 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/30 shrink-0 text-[10px] sm:text-sm">
-              P
+    <nav id="site-navigation" className="fixed top-3 left-0 right-0 z-50">
+      <div className="max-w-xl mx-auto px-4">
+        <div className="glass-dark rounded-full px-3 sm:px-5 py-2.5 flex items-center justify-between shadow-lg shadow-black/30">
+
+          {/* Logo */}
+          <button
+            type="button"
+            onClick={() => onViewChange('landing')}
+            className="flex items-center gap-2 group"
+          >
+            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shadow-md shadow-violet-500/30 shrink-0">
+              <span className="text-white font-extrabold text-[11px] sm:text-xs tracking-tight">PM</span>
             </div>
-            <span className="font-bold text-xs sm:text-base md:text-lg tracking-tight text-slate-800 whitespace-nowrap">
-              Pre-Med<span className="text-blue-600">Elect</span>
+            <span className="font-bold text-xs sm:text-sm tracking-tight text-zinc-100 whitespace-nowrap">
+              Pre-Med<span className="text-violet-400">Elect</span>
             </span>
-          </div>
-          
-          <div className="flex bg-slate-100/50 p-0.5 sm:p-1 rounded-full shrink-0 gap-0.5 sm:gap-1">
-            <button 
+          </button>
+
+          {/* Tab Switcher — hidden on mobile (bottom dock handles it) */}
+          <div className="hidden md:flex bg-zinc-800/80 p-0.5 rounded-full gap-0.5 border border-zinc-700/50">
+            <button
+              type="button"
               onClick={() => onViewChange('landing')}
-              className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] md:text-xs font-bold transition-all duration-300 whitespace-nowrap ${
-                view === 'landing' 
-                  ? 'bg-white text-blue-600 shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-700'
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
+                view === 'landing'
+                  ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/30'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
-              Voter
+              Voter Portal
             </button>
-            <button 
+            <button
+              type="button"
               onClick={() => onViewChange('admin')}
-              className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] md:text-xs font-bold transition-all duration-300 whitespace-nowrap ${
-                view === 'admin' 
-                  ? 'bg-slate-800 text-white shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-700'
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
+                view === 'admin'
+                  ? 'bg-zinc-100 text-zinc-900 shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               Admin
             </button>
           </div>
+
+          {/* Mobile label */}
+          <span className="block md:hidden text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">
+            {view === 'landing' ? 'Voter' : 'Admin'}
+          </span>
+
         </div>
       </div>
     </nav>
