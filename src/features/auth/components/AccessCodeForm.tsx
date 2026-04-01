@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserIcon, IdentificationIcon } from '@heroicons/react/24/outline';
+import { User, KeyRound } from 'lucide-react';
 import { AccessCodeForm } from '../../../shared/types';
 import { formatAccessCode } from '../../../shared/utils';
 import { useNotification } from '../../../shared/contexts/NotificationContext';
@@ -9,68 +9,62 @@ interface AccessCodeFormProps {
   isLoading?: boolean;
 }
 
-export const AccessCodeFormComponent: React.FC<AccessCodeFormProps> = ({ 
-  onSubmit, 
-  isLoading = false 
+const inputClass =
+  'block w-full rounded-xl bg-zinc-800 border border-zinc-700 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 pl-10 pr-4 py-3 text-zinc-100 placeholder-zinc-600 text-sm outline-none transition-all';
+
+const labelClass = 'block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5';
+
+export const AccessCodeFormComponent: React.FC<AccessCodeFormProps> = ({
+  onSubmit,
+  isLoading = false,
 }) => {
   const { showError } = useNotification();
-  const [formData, setFormData] = useState<AccessCodeForm>({
-    fullName: '',
-    code: ''
-  });
+  const [formData, setFormData] = useState<AccessCodeForm>({ fullName: '', code: '' });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!formData.fullName.trim()) {
       showError('Please enter your full name.');
       return;
     }
-    
     if (!formData.code.trim()) {
       showError('Please enter your access code.');
       return;
     }
-
     onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="group">
-        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">
-          Full Name
-        </label>
-        <div className="relative transition-all duration-300 focus-within:transform focus-within:-translate-y-1">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <UserIcon className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+
+      {/* Full Name */}
+      <div>
+        <label className={labelClass}>Full Name</label>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
           <input
             type="text"
             required
-            className="pl-11 block w-full rounded-2xl border-slate-200 bg-white/50 border focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 py-3 shadow-sm text-slate-700 text-sm md:text-base transition-all outline-none"
+            className={inputClass}
             placeholder="John Doe"
             value={formData.fullName}
-            onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+            onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
           />
         </div>
       </div>
 
-      <div className="group">
-        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">
-          Access Code
-        </label>
-        <div className="relative transition-all duration-300 focus-within:transform focus-within:-translate-y-1">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <IdentificationIcon className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-          </div>
+      {/* Access Code */}
+      <div>
+        <label className={labelClass}>Access Code</label>
+        <div className="relative">
+          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
           <input
             type="text"
             required
-            className="pl-11 block w-full rounded-2xl border-slate-200 bg-white/50 border focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 py-3 shadow-sm text-slate-700 text-sm md:text-base transition-all outline-none font-mono tracking-widest"
+            className={`${inputClass} font-mono tracking-widest`}
             placeholder="ABC-1234"
             value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: formatAccessCode(e.target.value) }))}
+            onChange={e => setFormData(prev => ({ ...prev, code: formatAccessCode(e.target.value) }))}
           />
         </div>
       </div>
@@ -78,18 +72,18 @@ export const AccessCodeFormComponent: React.FC<AccessCodeFormProps> = ({
       <button
         type="submit"
         disabled={isLoading}
-        className={`w-full mt-4 flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-lg shadow-green-500/30 text-sm font-bold text-white bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 hover:from-green-500 hover:to-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all transform hover:scale-[1.02] active:scale-[0.98] ${
+        className={`w-full mt-2 flex justify-center items-center gap-2 py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all active:scale-95 ${
           isLoading ? 'opacity-70 cursor-not-allowed' : ''
         }`}
       >
         {isLoading ? (
-          <span className="flex items-center">
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <>
+            <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-            Processing...
-          </span>
+            Processing…
+          </>
         ) : (
           'Login with Access Code'
         )}

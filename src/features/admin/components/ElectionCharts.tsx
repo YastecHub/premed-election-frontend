@@ -7,6 +7,8 @@ interface ElectionChartsProps {
   candidates: Candidate[];
 }
 
+const COLORS = ['#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#EC4899'];
+
 export const ElectionCharts: React.FC<ElectionChartsProps> = ({ candidates }) => {
   const chartData = candidates.map(candidate => ({
     name: candidate.name.split(' ')[0],
@@ -16,49 +18,60 @@ export const ElectionCharts: React.FC<ElectionChartsProps> = ({ candidates }) =>
 
   const totalVotes = candidates.reduce((sum, c) => sum + c.voteCount, 0);
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'];
-
   const pieData = candidates.map((candidate, index) => ({
     name: candidate.name,
     value: candidate.voteCount,
     color: COLORS[index % COLORS.length]
   }));
 
+  const tooltipStyle = {
+    backgroundColor: '#18181b',
+    border: '1px solid rgba(63,63,70,0.5)',
+    borderRadius: '12px',
+    color: '#f4f4f5',
+    fontSize: '12px',
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
-        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Vote Count</h3>
-        <div className="h-64 sm:h-80">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+      {/* Bar Chart */}
+      <div className="bento-card p-4 sm:p-5">
+        <h3 className="text-sm font-semibold text-zinc-100 mb-4">Vote Count</h3>
+        <div className="h-64 sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis 
-                dataKey="name" 
-                stroke="#9CA3AF" 
-                fontSize={12}
-                angle={-45}
+            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 30 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(63,63,70,0.5)" vertical={false} />
+              <XAxis
+                dataKey="name"
+                stroke="#52525b"
+                fontSize={11}
+                angle={-40}
                 textAnchor="end"
-                height={60}
+                height={55}
+                tick={{ fill: '#71717a' }}
               />
-              <YAxis stroke="#9CA3AF" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: 'none', 
-                  borderRadius: '8px',
-                  color: '#F9FAFB'
-                }}
+              <YAxis
+                stroke="#52525b"
+                fontSize={11}
+                tick={{ fill: '#71717a' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={tooltipStyle}
+                cursor={{ fill: 'rgba(139,92,246,0.08)' }}
                 labelFormatter={(label) => chartData.find(d => d.name === label)?.fullName || label}
               />
-              <Bar dataKey="votes" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="votes" fill="#8B5CF6" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
-        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Vote Distribution</h3>
-        <div className="h-64 sm:h-80">
+      {/* Pie Chart */}
+      <div className="bento-card p-4 sm:p-5">
+        <h3 className="text-sm font-semibold text-zinc-100 mb-4">Vote Distribution</h3>
+        <div className="h-64 sm:h-72">
           {totalVotes > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -66,31 +79,25 @@ export const ElectionCharts: React.FC<ElectionChartsProps> = ({ candidates }) =>
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={90}
+                  innerRadius={40}
                   dataKey="value"
                   label={({ name, percent }) => `${name.split(' ')[0]} ${(percent * 100).toFixed(0)}%`}
                   labelLine={false}
-                  fontSize={12}
+                  fontSize={11}
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: 'none', 
-                    borderRadius: '8px',
-                    color: '#F9FAFB'
-                  }}
-                />
+                <Tooltip contentStyle={tooltipStyle} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-400">
+            <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <BarChart3 className="h-10 w-10 mx-auto mb-2" />
-                <p className="text-sm">No votes yet</p>
+                <BarChart3 className="h-10 w-10 text-zinc-700 mx-auto mb-2" />
+                <p className="text-sm text-zinc-500">No votes yet</p>
               </div>
             </div>
           )}

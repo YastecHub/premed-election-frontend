@@ -37,31 +37,29 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onProceed, o
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto px-4 sm:px-4 relative">
-      <div className="hidden md:block absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-      <div className="hidden md:block absolute -bottom-8 -left-20 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-      
-      <div className="glass-panel relative rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border-white/50 w-full" style={{ width: '92%', margin: '0 auto' }}>
+    <div className="w-[92%] max-w-sm mx-auto">
+      <div className="bento-card p-5 sm:p-7">
+        {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-600">
-            Register & Verify
+          <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-100">
+            Register &amp; Verify
           </h2>
-          <p className="text-slate-500 mt-2 text-xs md:text-sm font-medium">
+          <p className="text-zinc-400 mt-1.5 text-xs sm:text-sm">
             Create your profile and verify your identity.
           </p>
         </div>
 
         {!useAccessCode ? (
           <>
-            <RegistrationFormComponent 
+            <RegistrationFormComponent
               onSubmit={handleRegistrationSubmit}
               isLoading={isLoading}
             />
-            <div className="mt-4 pt-4 border-t border-slate-200/50">
+            <div className="mt-4 pt-4 border-t border-zinc-700/50">
               <button
                 type="button"
                 onClick={() => setUseAccessCode(true)}
-                className="w-full text-xs md:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors py-3 min-h-[44px]"
+                className="w-full text-xs sm:text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors py-3 min-h-[44px]"
               >
                 Have an Access Code? Use it here
               </button>
@@ -69,15 +67,15 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onProceed, o
           </>
         ) : (
           <>
-            <AccessCodeFormComponent 
+            <AccessCodeFormComponent
               onSubmit={handleAccessCodeSubmit}
               isLoading={isLoading}
             />
-            <div className="mt-4 pt-4 border-t border-slate-200/50">
+            <div className="mt-4 pt-4 border-t border-zinc-700/50">
               <button
                 type="button"
                 onClick={() => setUseAccessCode(false)}
-                className="w-full text-xs md:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors py-3 min-h-[44px]"
+                className="w-full text-xs sm:text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors py-3 min-h-[44px]"
               >
                 Use Matric Number Instead
               </button>

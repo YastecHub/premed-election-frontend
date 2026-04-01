@@ -4,6 +4,9 @@ import { useNotification } from '../../../shared/contexts/NotificationContext';
 import { useElection } from '../../../shared/hooks/useElection';
 import { Play, Pause, Square, Clock, AlertTriangle } from 'lucide-react';
 
+const inputClass =
+  'block w-full rounded-xl bg-zinc-800 border border-zinc-700 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 px-4 py-3 text-zinc-100 text-sm outline-none transition-all min-h-[44px] text-center font-mono';
+
 export const ElectionControls: React.FC = () => {
   const { showError, showSuccess } = useNotification();
   const electionState = useElection();
@@ -12,9 +15,7 @@ export const ElectionControls: React.FC = () => {
   const [hours, setHours] = useState(1);
   const [minutes, setMinutes] = useState(0);
 
-  const getTotalMinutes = () => {
-    return (days * 24 * 60) + (hours * 60) + minutes;
-  };
+  const getTotalMinutes = () => (days * 24 * 60) + (hours * 60) + minutes;
 
   const handleElectionAction = async (action: string) => {
     const totalMinutes = getTotalMinutes();
@@ -22,7 +23,7 @@ export const ElectionControls: React.FC = () => {
       showError('Please set a valid duration for the election');
       return;
     }
-    
+
     setIsLoading(true);
     try {
       await votingService.toggleElection(action, action === 'start' ? totalMinutes : undefined);
@@ -34,191 +35,183 @@ export const ElectionControls: React.FC = () => {
     }
   };
 
-  const getStatusColor = () => {
+  const getStatusBadge = () => {
     switch (electionState.status) {
-      case 'active': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'paused': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'ended': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+      case 'active':   return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+      case 'paused':   return 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30';
+      case 'ended':    return 'bg-red-500/15 text-red-400 border-red-500/30';
+      default:         return 'bg-zinc-700/50 text-zinc-400 border-zinc-600/50';
     }
   };
 
   const getStatusText = () => {
     switch (electionState.status) {
-      case 'active': return 'Election is currently active';
-      case 'paused': return 'Election is paused';
-      case 'ended': return 'Election has ended';
-      default: return 'Election not started';
+      case 'active': return 'Live — accepting votes';
+      case 'paused': return 'Paused';
+      case 'ended':  return 'Ended';
+      default:       return 'Not started';
     }
   };
 
   const formatDuration = () => {
     const parts = [];
-    if (days > 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
-    if (hours > 0) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
-    if (minutes > 0) parts.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);
-    return parts.length > 0 ? parts.join(', ') : 'No duration set';
+    if (days > 0) parts.push(`${days}d`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}m`);
+    return parts.length > 0 ? parts.join(' ') : '—';
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-lg sm:text-xl font-bold text-white">Election Control Center</h2>
-        <div className={`px-3 py-2 rounded-lg border text-sm font-medium ${getStatusColor()}`}>
+    <div className="space-y-4 sm:space-y-5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h2 className="text-lg sm:text-xl font-bold text-zinc-100">Election Control Center</h2>
+        <div className={`px-3 py-1.5 rounded-xl border text-xs font-semibold ${getStatusBadge()}`}>
           {getStatusText()}
         </div>
       </div>
-      
+
       {/* Duration Settings */}
-      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
-        <div className="flex items-center space-x-2 mb-4">
-          <Clock className="h-5 w-5 text-blue-400" />
-          <h3 className="text-base sm:text-lg font-semibold text-white">Duration Settings</h3>
+      <div className="bento-card p-4 sm:p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Clock className="h-4 w-4 text-violet-400" />
+          <h3 className="text-sm font-semibold text-zinc-100">Duration Settings</h3>
         </div>
-        
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label htmlFor="election-days" className="block text-sm font-medium text-slate-300 mb-2">Days</label>
-              <input
-                id="election-days"
-                type="number"
-                value={days}
-                onChange={(e) => setDays(Math.max(0, Number(e.target.value)))}
-                className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white min-h-[44px]"
-                min="0"
-                max="30"
-                aria-label="Election duration in days"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="election-hours" className="block text-sm font-medium text-slate-300 mb-2">Hours</label>
-              <input
-                id="election-hours"
-                type="number"
-                value={hours}
-                onChange={(e) => setHours(Math.max(0, Math.min(23, Number(e.target.value))))}
-                className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white min-h-[44px]"
-                min="0"
-                max="23"
-                aria-label="Election duration in hours"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="election-minutes" className="block text-sm font-medium text-slate-300 mb-2">Minutes</label>
-              <input
-                id="election-minutes"
-                type="number"
-                value={minutes}
-                onChange={(e) => setMinutes(Math.max(0, Math.min(59, Number(e.target.value))))}
-                className="w-full px-3 py-2 bg-slate-700 rounded-lg text-white min-h-[44px]"
-                min="0"
-                max="59"
-                aria-label="Election duration in minutes"
-              />
-            </div>
+
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div>
+            <label htmlFor="election-days" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+              Days
+            </label>
+            <input
+              id="election-days"
+              type="number"
+              value={days}
+              onChange={(e) => setDays(Math.max(0, Number(e.target.value)))}
+              className={inputClass}
+              min="0"
+              max="30"
+              aria-label="Election duration in days"
+            />
           </div>
-          
-          <div className="bg-slate-700/50 rounded-lg p-3">
-            <p className="text-sm text-slate-300">
-              <span className="font-medium">Total Duration:</span> {formatDuration()}
-            </p>
-            <p className="text-xs text-slate-400 mt-1">
-              ({getTotalMinutes()} minutes total)
-            </p>
+
+          <div>
+            <label htmlFor="election-hours" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+              Hours
+            </label>
+            <input
+              id="election-hours"
+              type="number"
+              value={hours}
+              onChange={(e) => setHours(Math.max(0, Math.min(23, Number(e.target.value))))}
+              className={inputClass}
+              min="0"
+              max="23"
+              aria-label="Election duration in hours"
+            />
           </div>
+
+          <div>
+            <label htmlFor="election-minutes" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+              Minutes
+            </label>
+            <input
+              id="election-minutes"
+              type="number"
+              value={minutes}
+              onChange={(e) => setMinutes(Math.max(0, Math.min(59, Number(e.target.value))))}
+              className={inputClass}
+              min="0"
+              max="59"
+              aria-label="Election duration in minutes"
+            />
+          </div>
+        </div>
+
+        <div className="bg-zinc-800/60 rounded-xl px-4 py-3 border border-zinc-700/50">
+          <p className="text-sm text-zinc-300">
+            Total: <span className="font-semibold text-violet-400">{formatDuration()}</span>
+            <span className="text-zinc-500 text-xs ml-2">({getTotalMinutes()} min)</span>
+          </p>
         </div>
       </div>
 
-      {/* Control Buttons */}
-      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
-        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Election Actions</h3>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Election Actions */}
+      <div className="bento-card p-4 sm:p-5">
+        <h3 className="text-sm font-semibold text-zinc-100 mb-4">Actions</h3>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             onClick={() => handleElectionAction('start')}
             disabled={isLoading || electionState.status === 'active' || getTotalMinutes() === 0}
-            className="flex items-center justify-center space-x-2 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
+            className="flex items-center justify-center gap-2 px-3 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:border disabled:border-zinc-700/50 text-white rounded-xl transition-all min-h-[44px] text-sm font-semibold"
           >
             <Play className="h-4 w-4" />
-            <span>Start Election</span>
+            <span>Start</span>
           </button>
-          
+
           <button
             onClick={() => handleElectionAction('pause')}
             disabled={isLoading || electionState.status !== 'active'}
-            className="flex items-center justify-center space-x-2 px-4 py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
+            className="flex items-center justify-center gap-2 px-3 py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:border disabled:border-zinc-700/50 text-white rounded-xl transition-all min-h-[44px] text-sm font-semibold"
           >
             <Pause className="h-4 w-4" />
-            <span>Pause Election</span>
+            <span>Pause</span>
           </button>
-          
+
           <button
             onClick={() => handleElectionAction('resume')}
             disabled={isLoading || electionState.status !== 'paused'}
-            className="flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
+            className="flex items-center justify-center gap-2 px-3 py-3 bg-violet-600 hover:bg-violet-500 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:border disabled:border-zinc-700/50 text-white rounded-xl transition-all min-h-[44px] text-sm font-semibold"
           >
             <Play className="h-4 w-4" />
-            <span>Resume Election</span>
+            <span>Resume</span>
           </button>
-          
+
           <button
             onClick={() => handleElectionAction('stop')}
             disabled={isLoading || electionState.status === 'ended'}
-            className="flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-600 disabled:text-slate-400 rounded-lg transition-colors min-h-[44px] font-medium"
+            className="flex items-center justify-center gap-2 px-3 py-3 bg-red-600 hover:bg-red-500 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:border disabled:border-zinc-700/50 text-white rounded-xl transition-all min-h-[44px] text-sm font-semibold"
           >
             <Square className="h-4 w-4" />
-            <span>Stop Election</span>
+            <span>Stop</span>
           </button>
         </div>
       </div>
 
       {/* Election Info */}
-      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
-        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Election Information</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-slate-700/50 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-slate-300 mb-2">Current Status</h4>
-            <p className="text-lg font-bold text-white capitalize">{electionState.status || 'Not Started'}</p>
-          </div>
-          
-          <div className="bg-slate-700/50 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-slate-300 mb-2">End Time</h4>
-            <p className="text-lg font-bold text-white">
-              {electionState.endTime ? new Date(electionState.endTime).toLocaleString() : 'Not Set'}
-            </p>
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="bento-card p-4">
+          <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Current Status</p>
+          <p className="text-lg font-bold text-zinc-100 capitalize">{electionState.status || 'Not Started'}</p>
+        </div>
+
+        <div className="bento-card p-4">
+          <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">End Time</p>
+          <p className="text-sm font-semibold text-zinc-100">
+            {electionState.endTime ? new Date(electionState.endTime).toLocaleString() : '—'}
+          </p>
         </div>
       </div>
 
-      {/* Warning Messages */}
+      {/* Status Alerts */}
       {electionState.status === 'active' && (
-        <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <p className="text-green-400 font-medium">Election is currently live and accepting votes</p>
-          </div>
+        <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-xl px-4 py-3 flex items-center gap-2">
+          <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse flex-shrink-0" />
+          <p className="text-emerald-400 text-sm font-medium">Election is live and accepting votes</p>
         </div>
       )}
-      
+
       {electionState.status === 'paused' && (
-        <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <Pause className="h-5 w-5 text-yellow-400" />
-            <p className="text-yellow-400 font-medium">Election is paused. Voters cannot submit votes at this time.</p>
-          </div>
+        <div className="bg-yellow-500/10 border border-yellow-500/25 rounded-xl px-4 py-3 flex items-center gap-2">
+          <Pause className="h-4 w-4 text-yellow-400 flex-shrink-0" />
+          <p className="text-yellow-400 text-sm font-medium">Election is paused. Votes are not being accepted.</p>
         </div>
       )}
-      
-      {getTotalMinutes() === 0 && (
-        <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-red-400" />
-            <p className="text-red-400 font-medium">Please set a valid duration before starting the election.</p>
-          </div>
+
+      {getTotalMinutes() === 0 && electionState.status !== 'active' && electionState.status !== 'paused' && (
+        <div className="bg-red-500/10 border border-red-500/25 rounded-xl px-4 py-3 flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0" />
+          <p className="text-red-400 text-sm font-medium">Set a valid duration before starting the election.</p>
         </div>
       )}
     </div>

@@ -6,44 +6,71 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+// Mark the app as installed in localStorage so the banner is suppressed permanently
+function markInstalled() {
+  localStorage.setItem('pwa-installed', 'true');
+}
+
+// True when running as an installed PWA (launched from home screen / app icon)
+function isRunningInstalled(): boolean {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches ||
+    (window.navigator as any).standalone === true ||
+    localStorage.getItem('pwa-installed') === 'true'
+  );
+}
+
 export const PWAInstallBanner: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Check if app is already installed using multiple methods
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isIOSStandalone = (window.navigator as any).standalone === true;
-    const wasInstalled = localStorage.getItem('pwa-installed') === 'true';
-    
-    if (isStandalone || isIOSStandalone || wasInstalled) {
-      // Mark as installed and never show banner again
-      localStorage.setItem('pwa-installed', 'true');
+    // Already installed — persist the flag and skip everything
+    if (isRunningInstalled()) {
+      markInstalled();
       return;
     }
 
-    // Check if banner was dismissed recently
-    const dismissedTime = localStorage.getItem('pwa-banner-dismissed');
-    if (dismissedTime) {
-      const daysSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
-      if (daysSinceDismissed < 7) {
-        return; // Don't show again for 7 days
-      }
+    // Dismissed recently — respect the 7-day cooldown
+    const dismissedAt = localStorage.getItem('pwa-banner-dismissed');
+    if (dismissedAt) {
+      const daysSince = (Date.now() - parseInt(dismissedAt)) / (1000 * 60 * 60 * 24);
+      if (daysSince < 7) return;
     }
 
-    const handleBeforeInstallPrompt = (e: Event) => {
+    let isMounted = true;
+
+    const handleBeforeInstallPrompt = async (e: Event) => {
       e.preventDefault();
+
+      // Use getInstalledRelatedApps if the browser supports it.
+      // Returns a non-empty array when this PWA origin is already installed,
+      // even if the user installed via the browser's own Add-to-Home-Screen button.
+      if ('getInstalledRelatedApps' in navigator) {
+        try {
+          const relatedApps = await (navigator as any).getInstalledRelatedApps();
+          if (relatedApps.length > 0) {
+            markInstalled();
+            return; // PWA already on device — don't prompt
+          }
+        } catch {
+          // API unavailable in this context; fall through to normal prompt
+        }
+      }
+
+      if (!isMounted) return;
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
-      // Show banner after 3 seconds
+
+      // Small delay so the user has a moment to load the page first
       setTimeout(() => {
-        setShowBanner(true);
+        if (isMounted) setShowBanner(true);
       }, 3000);
     };
 
-    // Listen for app installed event
     const handleAppInstalled = () => {
-      localStorage.setItem('pwa-installed', 'true');
+      markInstalled();
       setShowBanner(false);
       setDeferredPrompt(null);
     };
@@ -52,6 +79,7 @@ export const PWAInstallBanner: React.FC = () => {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
+      isMounted = false;
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
@@ -59,15 +87,9 @@ export const PWAInstallBanner: React.FC = () => {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
-
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-      localStorage.setItem('pwa-installed', 'true');
-    }
-
+    if (outcome === 'accepted') markInstalled();
     setDeferredPrompt(null);
     setShowBanner(false);
   };
@@ -80,35 +102,44 @@ export const PWAInstallBanner: React.FC = () => {
   if (!showBanner || !deferredPrompt) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 animate-slide-up">
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-2xl p-4 border border-blue-400/30">
+    <div className="fixed bottom-20 md:bottom-6 left-3 right-3 md:left-auto md:right-6 md:max-w-sm z-[100]">
+      <div className="bento-card p-4 shadow-2xl shadow-black/50">
         <button
+          type="button"
           onClick={handleDismiss}
-          className="absolute top-2 right-2 p-1 hover:bg-white/20 rounded-full transition-colors"
+          className="absolute top-3 right-3 p-1 text-zinc-500 hover:text-zinc-300 transition-colors rounded-lg hover:bg-zinc-700/50"
           aria-label="Dismiss"
         >
-          <X className="h-4 w-4 text-white" />
+          <X className="h-4 w-4" />
         </button>
 
-        <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0 bg-white/20 p-2 rounded-xl">
-            <Smartphone className="h-6 w-6 text-white" />
+        <div className="flex items-start gap-3 pr-6">
+          <div className="flex-shrink-0 bg-violet-500/15 border border-violet-500/20 p-2.5 rounded-xl">
+            <Smartphone className="h-5 w-5 text-violet-400" />
           </div>
-          
+
           <div className="flex-1 min-w-0">
-            <h3 className="text-white font-bold text-sm mb-1">
-              📲 Install Pre-MedElect
-            </h3>
-            <p className="text-blue-100 text-xs mb-3">
-              Install on your phone for instant election alerts!
+            <h3 className="text-zinc-100 font-bold text-sm mb-0.5">Install Pre-MedElect</h3>
+            <p className="text-zinc-500 text-xs mb-3">
+              Add to your home screen for quick access.
             </p>
-            
-            <button
-              onClick={handleInstallClick}
-              className="w-full bg-white text-blue-700 font-bold py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors text-sm"
-            >
-              Install App
-            </button>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleInstallClick}
+                className="flex-1 py-2 px-3 bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold rounded-lg transition-all"
+              >
+                Install
+              </button>
+              <button
+                type="button"
+                onClick={handleDismiss}
+                className="py-2 px-3 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs font-medium rounded-lg transition-all"
+              >
+                Not now
+              </button>
+            </div>
           </div>
         </div>
       </div>
