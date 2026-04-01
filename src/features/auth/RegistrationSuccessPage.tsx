@@ -13,8 +13,8 @@ export const RegistrationSuccessPage: React.FC<RegistrationSuccessPageProps> = (
   const isRejected = user.verificationStatus === 'rejected';
 
   return (
-    <div className="w-full max-w-md mx-auto px-3 relative">
-      <div className="glass-panel relative rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-8 border-white/50 w-full">
+    <div className="w-full max-w-md mx-auto px-4 sm:px-4 relative">
+      <div className="glass-panel relative rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border-white/50 w-full" style={{ width: '92%', margin: '0 auto' }}>
         <div className="text-center">
           {isVerified && (
             <>

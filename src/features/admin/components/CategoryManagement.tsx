@@ -76,12 +76,13 @@ export const CategoryManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-xl font-bold text-white">Categories ({categories.length})</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-white">Categories ({categories.length})</h2>
         <button
           onClick={() => setShowForm(!showForm)}
           className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors min-h-[44px]"
+          aria-label="Add new category"
         >
           <Plus className="h-4 w-4" />
           <span>Add Category</span>
@@ -89,8 +90,8 @@ export const CategoryManagement: React.FC = () => {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-slate-800 rounded-lg p-4 md:p-6 space-y-4">
-          <h3 className="text-lg font-semibold text-white">
+        <form onSubmit={handleSubmit} className="bg-slate-800 rounded-lg p-4 sm:p-6 space-y-4 border border-slate-700">
+          <h3 className="text-base sm:text-lg font-semibold text-white">
             {editingId ? 'Edit Category' : 'Add New Category'}
           </h3>
           
@@ -132,7 +133,7 @@ export const CategoryManagement: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {categories.map(category => (
-          <div key={category._id} className="bg-slate-800 rounded-lg p-4">
+          <div key={category._id} className="bg-slate-800 rounded-lg p-4 border border-slate-700">
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold text-white">{category.name}</h3>
               <div className="flex space-x-2">
@@ -140,6 +141,7 @@ export const CategoryManagement: React.FC = () => {
                   onClick={() => handleEdit(category)}
                   className="p-1 text-blue-400 hover:text-blue-300 transition-colors"
                   title="Edit category"
+                  aria-label={`Edit ${category.name}`}
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -147,6 +149,7 @@ export const CategoryManagement: React.FC = () => {
                   onClick={() => handleDelete(category._id, category.name)}
                   className="p-1 text-red-400 hover:text-red-300 transition-colors"
                   title="Delete category"
+                  aria-label={`Delete ${category.name}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

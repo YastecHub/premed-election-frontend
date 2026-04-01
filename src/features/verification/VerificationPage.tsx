@@ -55,7 +55,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ draft, onVer
   };
 
   return (
-    <div className="glass-panel rounded-3xl p-8 text-center max-w-md mx-auto">
+    <div className="glass-panel rounded-2xl md:rounded-3xl p-5 md:p-8 text-center max-w-md mx-auto" style={{ width: '92%', margin: '0 auto' }}>
       <div className="mb-6">
         <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
           {uploadStep === 'upload' ? (

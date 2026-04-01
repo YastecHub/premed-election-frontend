@@ -11,8 +11,14 @@ export const PWAInstallBanner: React.FC = () => {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Check if app is already installed using multiple methods
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOSStandalone = (window.navigator as any).standalone === true;
+    const wasInstalled = localStorage.getItem('pwa-installed') === 'true';
+    
+    if (isStandalone || isIOSStandalone || wasInstalled) {
+      // Mark as installed and never show banner again
+      localStorage.setItem('pwa-installed', 'true');
       return;
     }
 
@@ -35,10 +41,19 @@ export const PWAInstallBanner: React.FC = () => {
       }, 3000);
     };
 
+    // Listen for app installed event
+    const handleAppInstalled = () => {
+      localStorage.setItem('pwa-installed', 'true');
+      setShowBanner(false);
+      setDeferredPrompt(null);
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
@@ -50,6 +65,7 @@ export const PWAInstallBanner: React.FC = () => {
 
     if (outcome === 'accepted') {
       console.log('User accepted the install prompt');
+      localStorage.setItem('pwa-installed', 'true');
     }
 
     setDeferredPrompt(null);

@@ -61,19 +61,19 @@ export const ElectionControls: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-xl font-bold text-white">Election Control Center</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-white">Election Control Center</h2>
         <div className={`px-3 py-2 rounded-lg border text-sm font-medium ${getStatusColor()}`}>
           {getStatusText()}
         </div>
       </div>
       
       {/* Duration Settings */}
-      <div className="bg-slate-800 rounded-lg p-4 md:p-6">
+      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
         <div className="flex items-center space-x-2 mb-4">
           <Clock className="h-5 w-5 text-blue-400" />
-          <h3 className="text-lg font-semibold text-white">Duration Settings</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-white">Duration Settings</h3>
         </div>
         
         <div className="space-y-4">
@@ -133,8 +133,8 @@ export const ElectionControls: React.FC = () => {
       </div>
 
       {/* Control Buttons */}
-      <div className="bg-slate-800 rounded-lg p-4 md:p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">Election Actions</h3>
+      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
+        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Election Actions</h3>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
@@ -176,8 +176,8 @@ export const ElectionControls: React.FC = () => {
       </div>
 
       {/* Election Info */}
-      <div className="bg-slate-800 rounded-lg p-4 md:p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">Election Information</h3>
+      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
+        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Election Information</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-slate-700/50 rounded-lg p-4">

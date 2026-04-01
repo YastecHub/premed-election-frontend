@@ -80,12 +80,13 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Candidates ({candidates.length})</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h2 className="text-lg sm:text-xl font-bold text-white">Candidates ({candidates.length})</h2>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+          className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors min-h-[44px]"
+          aria-label="Add new candidate"
         >
           <Plus className="h-4 w-4" />
           <span>Add Candidate</span>
@@ -93,8 +94,8 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
       </div>
 
       {showAddForm && (
-        <form onSubmit={handleAddCandidate} className="bg-slate-800 rounded-lg p-6 space-y-4">
-          <h3 className="text-lg font-semibold">Add New Candidate</h3>
+        <form onSubmit={handleAddCandidate} className="bg-slate-800 rounded-lg p-4 sm:p-6 space-y-4 border border-slate-700">
+          <h3 className="text-base sm:text-lg font-semibold text-white">Add New Candidate</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -185,11 +186,11 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
             />
           </div>
           
-          <div className="flex space-x-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <button
               type="submit"
               disabled={isUploading}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-lg transition-colors"
+              className="w-full sm:w-auto px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-lg transition-colors font-medium min-h-[44px]"
             >
               {isUploading ? 'Uploading...' : 'Add Candidate'}
             </button>
@@ -222,13 +223,14 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {categoryCandidates.map(candidate => (
-                <div key={candidate._id} className="bg-slate-800 rounded-lg p-4">
+                <div key={candidate._id} className="bg-slate-800 rounded-lg p-4 border border-slate-700">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold">{candidate.name}</h3>
+                    <h3 className="font-semibold text-white">{candidate.name}</h3>
                     <button
                       onClick={() => handleDeleteCandidate(candidate._id, candidate.name)}
                       className="p-1 text-red-400 hover:text-red-300 transition-colors"
                       title="Delete candidate"
+                      aria-label={`Delete ${candidate.name}`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -245,8 +247,8 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
       
       {/* Show message if no candidates */}
       {candidates.length === 0 && (
-        <div className="text-center py-8 text-slate-400">
-          <p>No candidates added yet</p>
+        <div className="bg-slate-800 rounded-lg p-8 text-center border border-slate-700">
+          <p className="text-slate-400">No candidates added yet</p>
         </div>
       )}
       

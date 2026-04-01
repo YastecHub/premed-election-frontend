@@ -25,10 +25,10 @@ export const ElectionCharts: React.FC<ElectionChartsProps> = ({ candidates }) =>
   }));
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="bg-slate-800 rounded-lg p-4 md:p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">Vote Count</h3>
-        <div className="h-64 md:h-80">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
+        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Vote Count</h3>
+        <div className="h-64 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -56,9 +56,9 @@ export const ElectionCharts: React.FC<ElectionChartsProps> = ({ candidates }) =>
         </div>
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-4 md:p-6">
-        <h3 className="text-lg font-semibold mb-4 text-white">Vote Distribution</h3>
-        <div className="h-64 md:h-80">
+      <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
+        <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Vote Distribution</h3>
+        <div className="h-64 sm:h-80">
           {totalVotes > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

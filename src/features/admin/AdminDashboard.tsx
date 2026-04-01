@@ -85,13 +85,13 @@ export const AdminDashboard: React.FC = () => {
   }
 
   const StatCard = ({ title, value, icon: Icon, color }: { title: string; value: number; icon: any; color: string }) => (
-    <div className="bg-slate-800 rounded-lg p-4 md:p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-slate-400">{title}</p>
-          <p className="text-2xl md:text-3xl font-bold text-white mt-1">{value}</p>
+    <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs sm:text-sm text-slate-400 truncate mb-1">{title}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-white">{value}</p>
         </div>
-        <div className={`p-3 rounded-lg ${color}`}>
+        <div className={`p-3 rounded-lg flex-shrink-0 ${color}`}>
           <Icon className="h-6 w-6" />
         </div>
       </div>
@@ -139,9 +139,9 @@ export const AdminDashboard: React.FC = () => {
       default:
         const rankings = calculateRankings(candidates);
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <StatCard 
                 title="Total Candidates" 
                 value={stats.users} 
@@ -169,15 +169,15 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Main Dashboard Content */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
               <div className="xl:col-span-2">
                 <LiveResults rankings={rankings} />
               </div>
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Election Status & Countdown */}
-                <div className="bg-slate-800 rounded-lg p-4 md:p-6">
+                <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">Election Status</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-white">Election Status</h3>
                     <div className={`px-3 py-1 rounded-full text-xs font-bold text-white ${getElectionStatusColor()}`}>
                       {getElectionStatusText()}
                     </div>
@@ -218,6 +218,7 @@ export const AdminDashboard: React.FC = () => {
                     <button
                       onClick={() => setActiveTab('verifications')}
                       className="w-full px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-medium transition-colors min-h-[44px]"
+                      aria-label="Review pending verifications"
                     >
                       Review Verifications
                     </button>
@@ -236,47 +237,51 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Fixed Header */}
-      <div className="sticky top-0 z-50 bg-slate-800 border-b border-slate-700 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-xl md:text-2xl font-bold text-white">Admin Dashboard</h1>
-            
-            {/* Live Election Indicator */}
-            {electionState.status === 'active' && electionState.endTime && (
-              <div className="hidden md:flex items-center space-x-3 bg-green-900/30 border border-green-500/30 rounded-lg px-3 py-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <div className="text-sm">
-                  <span className="text-green-400 font-medium">LIVE:</span>
-                  <span className="text-white ml-2">
-                    {Math.floor((new Date(electionState.endTime).getTime() - Date.now()) / (1000 * 60 * 60))}h {Math.floor(((new Date(electionState.endTime).getTime() - Date.now()) % (1000 * 60 * 60)) / (1000 * 60))}m left
-                  </span>
-                </div>
-              </div>
-            )}
+      <div className="sticky top-0 z-50 bg-slate-800 border-b border-slate-700 px-3 sm:px-4 py-3">
+        <div className="max-w-7xl mx-auto">
+          {/* Top row: Title and Logout */}
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-base sm:text-lg md:text-xl font-bold text-white truncate">Admin Dashboard</h1>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[44px] flex-shrink-0"
+              aria-label="Logout"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </button>
           </div>
           
-          <div className="flex items-center space-x-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm text-slate-300">{admin.username}</p>
+          {/* Bottom row: User info and Live indicator */}
+          <div className="mt-2 flex items-center justify-between">
+            <div className="flex-1">
+              {/* Live Election Indicator */}
+              {electionState.status === 'active' && electionState.endTime && (
+                <div className="flex items-center space-x-2 bg-green-900/30 border border-green-500/30 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 max-w-fit">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse flex-shrink-0"></div>
+                  <div className="text-xs sm:text-sm">
+                    <span className="text-green-400 font-medium">LIVE:</span>
+                    <span className="text-white ml-1 sm:ml-2">
+                      {Math.floor((new Date(electionState.endTime).getTime() - Date.now()) / (1000 * 60 * 60))}h {Math.floor(((new Date(electionState.endTime).getTime() - Date.now()) % (1000 * 60 * 60)) / (1000 * 60))}m
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="text-right text-xs sm:text-sm flex-shrink-0">
+              <p className="text-slate-300">{admin.username}</p>
               <p className="text-xs text-slate-400">
                 {admin.role === 'super_admin' ? 'Super Admin' : 'Admin'}
               </p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition-colors min-h-[44px]"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Sign Out</span>
-            </button>
           </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-slate-800/50 px-4 py-2 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex space-x-1 overflow-x-auto pb-2">
+      <div className="bg-slate-800/50 border-b border-slate-700 overflow-x-auto scrollbar-hide">
+        <div className="max-w-7xl mx-auto px-3 py-2">
+          <div className="flex space-x-1 min-w-max">
             {[
               { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
               { key: 'verifications', label: 'Verifications', icon: CheckCircle, badge: stats.pending > 0 ? stats.pending : null },
@@ -290,18 +295,18 @@ export const AdminDashboard: React.FC = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
-                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${
+                className={`relative px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] flex items-center space-x-2 flex-shrink-0 ${
                   activeTab === tab.key
                     ? 'bg-blue-600 text-white'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
                 }`}
+                title={tab.label}
+                aria-label={tab.label}
               >
-                <span className="flex items-center space-x-2">
-                  <IconComponent className="h-4 w-4" />
-                  <span>{tab.label}</span>
-                </span>
+                <IconComponent className="h-4 w-4 flex-shrink-0" />
+                <span>{tab.label}</span>
                 {tab.badge && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {tab.badge}
                   </span>
                 )}
@@ -312,7 +317,7 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="p-4 md:p-6">
+      <div className="p-4 sm:p-6 bg-slate-900">
         <div className="max-w-7xl mx-auto">
           {renderTabContent()}
         </div>

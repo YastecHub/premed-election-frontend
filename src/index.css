@@ -123,6 +123,11 @@ body, html {
   }
 }
 
+/* Hide site navigation when app is in admin view (added class to body) */
+.admin-view #site-navigation {
+  display: none !important;
+}
+
 /* Improved mobile animations */
 @media (prefers-reduced-motion: no-preference) {
   .animate-blob {

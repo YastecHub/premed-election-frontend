@@ -17,8 +17,8 @@ export const LiveResults: React.FC<LiveResultsProps> = ({ rankings }) => {
   };
 
   return (
-    <div className="bg-slate-800 rounded-lg p-4 md:p-6">
-      <h3 className="text-lg font-semibold mb-4 text-white">Live Results</h3>
+    <div className="bg-slate-800 rounded-lg p-4 sm:p-6 border border-slate-700">
+      <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Live Results</h3>
       
       {/* Mobile View */}
       <div className="block md:hidden space-y-3">

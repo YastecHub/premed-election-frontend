@@ -42,11 +42,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess }) => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto px-3 relative">
+    <div className="w-full max-w-sm mx-auto px-4 sm:px-4 relative">
       <div className="hidden md:block absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
       <div className="hidden md:block absolute -bottom-8 -left-20 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
       
-      <div className="glass-panel relative rounded-2xl md:rounded-3xl shadow-2xl p-4 md:p-8 border-white/50 w-full">
+      <div className="glass-panel relative rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border-white/50 w-full" style={{ width: '92%', margin: '0 auto' }}>
         <div className="text-center mb-6">
           <h2 className="text-xl md:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-600">
             Voter Login

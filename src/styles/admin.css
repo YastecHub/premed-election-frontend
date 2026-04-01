@@ -1,0 +1,16 @@
+/* Hide scrollbar for mobile navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 640px) {
+  .admin-nav-tabs {
+    -webkit-overflow-scrolling: touch;
+  }
+}
