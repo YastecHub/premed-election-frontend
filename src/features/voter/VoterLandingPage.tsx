@@ -21,7 +21,7 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
         <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-3 py-1 mb-5">
             <Zap className="h-3.5 w-3.5 text-violet-400" />
-            <span className="text-xs font-semibold text-violet-300 tracking-wide">Pre-Med Elections 2025</span>
+            <span className="text-xs font-semibold text-violet-300 tracking-wide">Pre-Med Elections 2026</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4 leading-none">
