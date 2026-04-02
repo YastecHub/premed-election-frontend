@@ -241,7 +241,7 @@ function App() {
 
         <Navigation view={view} onViewChange={handleViewChange} isVisible={true} />
 
-        <main className="relative z-10 min-h-screen pt-12 sm:pt-14 pb-20 md:pb-10 px-4 transition-colors duration-500">
+        <main className="relative z-10 min-h-screen pt-14 sm:pt-16 pb-20 md:pb-10 px-4 transition-colors duration-500">
           <div className="max-w-5xl mx-auto">
             {renderVoterFlow()}
           </div>

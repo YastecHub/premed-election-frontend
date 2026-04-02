@@ -11,7 +11,7 @@ export class CategoryService {
   }
 
   async updateCategory(id: string, data: CategoryForm): Promise<Category> {
-    return apiClient.post<Category>(`/categories/${id}`, data);
+    return apiClient.put<Category>(`/categories/${id}`, data);
   }
 
   async deleteCategory(id: string): Promise<void> {

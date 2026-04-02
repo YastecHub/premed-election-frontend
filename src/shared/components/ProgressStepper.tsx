@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserGroupIcon, ShieldCheckIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { Users, ShieldCheck, BarChart3 } from 'lucide-react';
 
 interface ProgressStepperProps {
   currentStep: string;
@@ -8,46 +8,36 @@ interface ProgressStepperProps {
 
 export const ProgressStepper: React.FC<ProgressStepperProps> = ({ currentStep, getStepStatus }) => {
   return (
-    <div className="mb-8 md:mb-12 max-w-xl mx-auto px-2">
+    <div className="mb-8 md:mb-10 max-w-xs mx-auto px-2">
       <div className="relative flex justify-between items-center">
-        {/* Connecting Line */}
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10 transform -translate-y-1/2 rounded-full"></div>
-        {/* Dynamic width progress bar */}
-        <div className={`progress-indicator ${
-          currentStep === 'register' ? 'progress-indicator-0' : 
-          currentStep === 'verify' ? 'progress-indicator-50' : 
-          'progress-indicator-100'
-        }`}></div>
+        {/* Connecting line */}
+        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-800 -z-10 -translate-y-1/2 rounded-full" />
 
         {/* Step 1 - Register */}
-        <div className="flex flex-col items-center group">
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-4 transition-all duration-300 z-10 ${
-            getStepStatus(currentStep, 'register') === 'complete' 
-              ? 'bg-blue-600 border-blue-600 text-white' 
-              : 'bg-white border-blue-600 text-blue-600 shadow-lg shadow-blue-500/20'
+        <div className="flex flex-col items-center">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all z-10 ${
+            getStepStatus(currentStep, 'register') === 'complete'
+              ? 'bg-violet-600 border-violet-600 text-white'
+              : 'bg-zinc-900 border-violet-500 text-violet-400'
           }`}>
-            <UserGroupIcon className="h-4 w-4 md:h-5 md:w-5" />
+            <Users className="h-3.5 w-3.5" />
           </div>
-          <span className="text-[10px] md:text-xs font-bold mt-2 text-slate-600 bg-white/60 px-2 rounded-md backdrop-blur-sm">
-            Register
-          </span>
+          <span className="text-[10px] font-bold mt-1.5 text-zinc-500">Register</span>
         </div>
 
         {/* Step 2 - Verify */}
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-4 transition-all duration-300 z-10 ${
-            getStepStatus(currentStep, 'verify') === 'current' 
-              ? 'bg-white border-blue-600 text-blue-600 shadow-lg shadow-blue-500/20 scale-110' : 
-            getStepStatus(currentStep, 'verify') === 'complete' 
-              ? 'bg-blue-600 border-blue-600 text-white' 
-              : 'bg-slate-100 border-slate-200 text-slate-400'
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all z-10 ${
+            getStepStatus(currentStep, 'verify') === 'current'
+              ? 'bg-zinc-900 border-violet-500 text-violet-400 scale-110'
+              : getStepStatus(currentStep, 'verify') === 'complete'
+              ? 'bg-violet-600 border-violet-600 text-white'
+              : 'bg-zinc-900 border-zinc-700 text-zinc-600'
           }`}>
-            <ShieldCheckIcon className="h-4 w-4 md:h-5 md:w-5" />
+            <ShieldCheck className="h-3.5 w-3.5" />
           </div>
-          <span className={`text-[10px] md:text-xs font-bold mt-2 px-2 rounded-md backdrop-blur-sm transition-colors ${
-            getStepStatus(currentStep, 'verify') === 'upcoming' 
-              ? 'text-slate-400' 
-              : 'text-slate-600 bg-white/60'
+          <span className={`text-[10px] font-bold mt-1.5 ${
+            getStepStatus(currentStep, 'verify') === 'upcoming' ? 'text-zinc-600' : 'text-zinc-500'
           }`}>
             Verify
           </span>
@@ -55,17 +45,15 @@ export const ProgressStepper: React.FC<ProgressStepperProps> = ({ currentStep, g
 
         {/* Step 3 - Vote */}
         <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-4 transition-all duration-300 z-10 ${
-            getStepStatus(currentStep, 'vote') === 'current' 
-              ? 'bg-white border-green-500 text-green-500 shadow-lg shadow-green-500/20 scale-110' 
-              : 'bg-slate-100 border-slate-200 text-slate-400'
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all z-10 ${
+            getStepStatus(currentStep, 'vote') === 'current'
+              ? 'bg-zinc-900 border-emerald-500 text-emerald-400 scale-110'
+              : 'bg-zinc-900 border-zinc-700 text-zinc-600'
           }`}>
-            <ChartBarIcon className="h-4 w-4 md:h-5 md:w-5" />
+            <BarChart3 className="h-3.5 w-3.5" />
           </div>
-          <span className={`text-[10px] md:text-xs font-bold mt-2 px-2 rounded-md backdrop-blur-sm transition-colors ${
-            currentStep === 'vote' 
-              ? 'text-green-600 bg-white/60' 
-              : 'text-slate-400'
+          <span className={`text-[10px] font-bold mt-1.5 ${
+            currentStep === 'vote' ? 'text-emerald-400' : 'text-zinc-600'
           }`}>
             Vote
           </span>

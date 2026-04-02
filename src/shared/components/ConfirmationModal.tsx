@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { AlertTriangle, X } from 'lucide-react';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -28,21 +28,21 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     switch (type) {
       case 'danger':
         return {
-          icon: 'text-red-600',
-          iconBg: 'bg-red-100',
-          button: 'bg-red-600 hover:bg-red-700'
+          icon: 'text-red-400',
+          iconBg: 'bg-red-500/15 border border-red-500/20',
+          button: 'bg-red-600 hover:bg-red-500'
         };
       case 'info':
         return {
-          icon: 'text-blue-600',
-          iconBg: 'bg-blue-100',
-          button: 'bg-blue-600 hover:bg-blue-700'
+          icon: 'text-violet-400',
+          iconBg: 'bg-violet-500/15 border border-violet-500/20',
+          button: 'bg-violet-600 hover:bg-violet-500'
         };
       default:
         return {
-          icon: 'text-yellow-600',
-          iconBg: 'bg-yellow-100',
-          button: 'bg-yellow-600 hover:bg-yellow-700'
+          icon: 'text-amber-400',
+          iconBg: 'bg-amber-500/15 border border-amber-500/20',
+          button: 'bg-amber-600 hover:bg-amber-500'
         };
     }
   };
@@ -51,34 +51,37 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onCancel}></div>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative z-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-        <div className="flex items-start space-x-4">
-          <div className={`flex-shrink-0 p-2 rounded-full ${colors.iconBg}`}>
-            <ExclamationTriangleIcon className={`h-6 w-6 ${colors.icon}`} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
+      <div className="bento-card w-full max-w-sm p-5 relative z-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+        <div className="flex items-start gap-3">
+          <div className={`flex-shrink-0 p-2 rounded-xl ${colors.iconBg}`}>
+            <AlertTriangle className={`h-5 w-5 ${colors.icon}`} />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">{title}</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">{message}</p>
+            <h3 className="text-base font-semibold text-zinc-100 mb-1">{title}</h3>
+            <p className="text-sm text-zinc-400 leading-relaxed">{message}</p>
           </div>
           <button
+            type="button"
             onClick={onCancel}
-            className="flex-shrink-0 p-1 rounded-full hover:bg-slate-100 transition-colors"
+            className="flex-shrink-0 p-1 rounded-lg text-zinc-600 hover:text-zinc-300 hover:bg-zinc-700/50 transition-colors"
           >
-            <XMarkIcon className="h-5 w-5 text-slate-400" />
+            <X className="h-4 w-4" />
           </button>
         </div>
-        
-        <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end space-y-2 space-y-reverse sm:space-y-0 sm:space-x-3">
+
+        <div className="mt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
           <button
+            type="button"
             onClick={onCancel}
-            className="w-full sm:w-auto px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-colors min-h-[44px]"
+            className="w-full sm:w-auto px-4 py-2.5 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 font-medium rounded-xl transition-colors min-h-[44px] text-sm"
           >
             {cancelText}
           </button>
           <button
+            type="button"
             onClick={onConfirm}
-            className={`w-full sm:w-auto px-4 py-3 ${colors.button} text-white font-medium rounded-lg transition-colors min-h-[44px]`}
+            className={`w-full sm:w-auto px-4 py-2.5 ${colors.button} text-white font-medium rounded-xl transition-colors min-h-[44px] text-sm`}
           >
             {confirmText}
           </button>

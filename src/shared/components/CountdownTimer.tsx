@@ -6,10 +6,10 @@ interface CountdownTimerProps {
   isPaused: boolean;
 }
 
-export const CountdownTimer: React.FC<CountdownTimerProps> = ({ 
-  targetDate, 
-  isActive, 
-  isPaused 
+export const CountdownTimer: React.FC<CountdownTimerProps> = ({
+  targetDate,
+  isActive,
+  isPaused
 }) => {
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
@@ -37,9 +37,9 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   }, [targetDate]);
 
   const getStatusColor = () => {
-    if (isPaused) return 'text-amber-600 bg-amber-50 border-amber-200';
-    if (!isActive) return 'text-red-600 bg-red-50 border-red-200';
-    return 'text-green-600 bg-green-50 border-green-200';
+    if (isPaused) return 'text-amber-400 bg-amber-500/15 border-amber-500/25';
+    if (!isActive) return 'text-red-400 bg-red-500/15 border-red-500/25';
+    return 'text-emerald-400 bg-emerald-500/15 border-emerald-500/25';
   };
 
   const getStatusText = () => {
@@ -50,18 +50,18 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
 
   return (
     <div className="text-center">
-      <div className="flex justify-center space-x-2 mb-3">
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/50 shadow-sm">
-          <div className="text-lg md:text-xl font-bold text-slate-800">{String(timeLeft.hours).padStart(2, '0')}</div>
-          <div className="text-xs text-slate-500 font-medium">Hours</div>
+      <div className="flex justify-center gap-2 mb-3">
+        <div className="bg-zinc-800/80 rounded-xl px-3 py-2 border border-zinc-700/50 min-w-[56px]">
+          <div className="text-lg md:text-xl font-bold text-zinc-100 tabular-nums">{String(timeLeft.hours).padStart(2, '0')}</div>
+          <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Hours</div>
         </div>
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/50 shadow-sm">
-          <div className="text-lg md:text-xl font-bold text-slate-800">{String(timeLeft.minutes).padStart(2, '0')}</div>
-          <div className="text-xs text-slate-500 font-medium">Minutes</div>
+        <div className="bg-zinc-800/80 rounded-xl px-3 py-2 border border-zinc-700/50 min-w-[56px]">
+          <div className="text-lg md:text-xl font-bold text-zinc-100 tabular-nums">{String(timeLeft.minutes).padStart(2, '0')}</div>
+          <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Minutes</div>
         </div>
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/50 shadow-sm">
-          <div className="text-lg md:text-xl font-bold text-slate-800">{String(timeLeft.seconds).padStart(2, '0')}</div>
-          <div className="text-xs text-slate-500 font-medium">Seconds</div>
+        <div className="bg-zinc-800/80 rounded-xl px-3 py-2 border border-zinc-700/50 min-w-[56px]">
+          <div className="text-lg md:text-xl font-bold text-zinc-100 tabular-nums">{String(timeLeft.seconds).padStart(2, '0')}</div>
+          <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Seconds</div>
         </div>
       </div>
       <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor()}`}>

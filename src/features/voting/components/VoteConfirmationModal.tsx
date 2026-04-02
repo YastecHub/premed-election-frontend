@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+import { AlertCircle } from 'lucide-react';
 import { Candidate } from '../../../shared/types';
 
 interface VoteConfirmationModalProps {
@@ -21,33 +21,37 @@ export const VoteConfirmationModal: React.FC<VoteConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={onCancel}></div>
-      <div className="bg-white rounded-3xl shadow-2xl w-[95%] md:w-full max-w-md p-6 md:p-8 relative z-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-300" onClick={onCancel} />
+      <div className="bento-card w-[92%] sm:w-full max-w-sm p-5 sm:p-7 relative z-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
         <div className="flex flex-col items-center text-center">
-          <div className="bg-yellow-50 p-4 rounded-full mb-6 ring-8 ring-yellow-50/50">
-            <ExclamationCircleIcon className="h-10 w-10 md:h-12 md:w-12 text-yellow-500" />
+          <div className="bg-amber-500/15 border border-amber-500/20 p-3.5 rounded-2xl mb-5">
+            <AlertCircle className="h-8 w-8 text-amber-400" />
           </div>
-          <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 mb-2">
+          <h3 className="text-lg sm:text-xl font-extrabold text-zinc-100 mb-1">
             Final Confirmation
           </h3>
-          <p className="text-slate-500 mb-8 leading-relaxed text-sm md:text-base">
-            You are about to securely cast your vote for <br/>
-            <span className="font-bold text-slate-900 text-lg md:text-xl block mt-2 p-2 bg-slate-50 rounded-lg border border-slate-100">
-              {candidate.name}
-            </span>
+          <p className="text-zinc-400 mb-5 text-sm leading-relaxed">
+            You are about to cast your vote for
           </p>
-          <div className="flex space-x-3 w-full">
-            <button 
-              onClick={onCancel} 
-              disabled={isSubmitting} 
-              className="flex-1 py-3 md:py-4 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-colors disabled:opacity-50 text-sm md:text-base"
+          <div className="w-full bg-zinc-800/60 border border-zinc-700/50 rounded-xl px-4 py-3 mb-6">
+            <p className="font-bold text-zinc-100 text-base">
+              {candidate.name}
+            </p>
+          </div>
+          <div className="flex gap-3 w-full">
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={isSubmitting}
+              className="flex-1 py-3 px-4 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 font-semibold rounded-xl transition-colors disabled:opacity-50 text-sm min-h-[44px]"
             >
               Cancel
             </button>
-            <button 
-              onClick={onConfirm} 
-              disabled={isSubmitting} 
-              className="flex-1 py-3 md:py-4 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all transform active:scale-95 disabled:opacity-50 flex justify-center items-center text-sm md:text-base"
+            <button
+              type="button"
+              onClick={onConfirm}
+              disabled={isSubmitting}
+              className="flex-1 py-3 px-4 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/20 transition-all active:scale-95 disabled:opacity-50 flex justify-center items-center text-sm min-h-[44px]"
             >
               {isSubmitting ? 'Signing...' : 'Confirm Vote'}
             </button>

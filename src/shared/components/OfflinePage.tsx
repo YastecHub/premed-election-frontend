@@ -7,34 +7,34 @@ export const OfflinePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
-          <div className="mb-6 flex justify-center">
-            <div className="bg-slate-100 p-4 rounded-full">
-              <WifiOff className="h-16 w-16 text-slate-400" />
+    <div className="min-h-screen bg-zinc-950 dot-bg flex items-center justify-center p-4">
+      <div className="w-[92%] max-w-sm mx-auto">
+        <div className="bento-card p-6 sm:p-8 text-center">
+          <div className="mb-5">
+            <div className="h-14 w-14 bg-zinc-800 border border-zinc-700/50 rounded-2xl flex items-center justify-center mx-auto">
+              <WifiOff className="h-7 w-7 text-zinc-500" />
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-800 mb-3">
+          <h1 className="text-xl font-extrabold text-zinc-100 mb-2">
             You're Offline
           </h1>
-
-          <p className="text-slate-600 mb-6">
+          <p className="text-zinc-400 text-sm mb-6">
             It looks like you've lost your internet connection. Please check your network and try again.
           </p>
 
           <button
+            type="button"
             onClick={handleRetry}
-            className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 px-6 rounded-xl hover:from-blue-700 hover:to-indigo-800 transition-all"
+            className="w-full flex items-center justify-center gap-2 py-3 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl transition-all text-sm min-h-[44px]"
           >
-            <RefreshCw className="h-5 w-5" />
+            <RefreshCw className="h-4 w-4" />
             <span>Try Again</span>
           </button>
 
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-sm text-slate-500">
-              <strong>Note:</strong> Voting requires an active internet connection to ensure your vote is securely recorded.
+          <div className="mt-5 pt-4 border-t border-zinc-700/50">
+            <p className="text-xs text-zinc-500">
+              Voting requires an active internet connection to ensure your vote is securely recorded.
             </p>
           </div>
         </div>

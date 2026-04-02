@@ -1,5 +1,5 @@
 import React from 'react';
-import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { X, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface NotificationModalProps {
   isOpen: boolean;
@@ -8,43 +8,50 @@ interface NotificationModalProps {
   onClose: () => void;
 }
 
-export const NotificationModal: React.FC<NotificationModalProps> = ({ 
-  isOpen, 
-  message, 
-  type, 
-  onClose 
+export const NotificationModal: React.FC<NotificationModalProps> = ({
+  isOpen,
+  message,
+  type,
+  onClose
 }) => {
   if (!isOpen) return null;
 
+  const isError = type === 'error';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose}></div>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative z-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-        <div className="flex items-start space-x-4">
-          <div className={`flex-shrink-0 p-2 rounded-full ${type === 'error' ? 'bg-red-100' : 'bg-green-100'}`}>
-            <ExclamationTriangleIcon className={`h-6 w-6 ${type === 'error' ? 'text-red-600' : 'text-green-600'}`} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="bento-card w-full max-w-sm p-5 relative z-10 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+        <div className="flex items-start gap-3">
+          <div className={`flex-shrink-0 p-2 rounded-xl border ${
+            isError ? 'bg-red-500/15 border-red-500/20' : 'bg-emerald-500/15 border-emerald-500/20'
+          }`}>
+            {isError
+              ? <AlertTriangle className="h-5 w-5 text-red-400" />
+              : <CheckCircle className="h-5 w-5 text-emerald-400" />
+            }
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className={`text-lg font-semibold ${type === 'error' ? 'text-red-900' : 'text-green-900'}`}>
-              {type === 'error' ? 'Error' : 'Success'}
+            <h3 className={`text-base font-semibold ${isError ? 'text-red-400' : 'text-emerald-400'}`}>
+              {isError ? 'Error' : 'Success'}
             </h3>
-            <p className="mt-1 text-sm text-slate-600 leading-relaxed">{message}</p>
+            <p className="mt-0.5 text-sm text-zinc-400 leading-relaxed">{message}</p>
           </div>
           <button
+            type="button"
             onClick={onClose}
             title="Close notification"
-            className="flex-shrink-0 p-1 rounded-full hover:bg-slate-100 transition-colors"
+            className="flex-shrink-0 p-1 rounded-lg text-zinc-600 hover:text-zinc-300 hover:bg-zinc-700/50 transition-colors"
           >
-            <XMarkIcon className="h-5 w-5 text-slate-400" />
+            <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-6 flex justify-end">
+        <div className="mt-4 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              type === 'error' 
-                ? 'bg-red-600 hover:bg-red-700 text-white' 
-                : 'bg-green-600 hover:bg-green-700 text-white'
+            className={`px-4 py-2 rounded-xl font-medium text-sm transition-colors text-white min-h-[40px] ${
+              isError ? 'bg-red-600 hover:bg-red-500' : 'bg-emerald-600 hover:bg-emerald-500'
             }`}
           >
             Close

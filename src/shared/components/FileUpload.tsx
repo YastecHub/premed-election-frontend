@@ -80,9 +80,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-2xl p-6 transition-all ${
-            isDragging 
-              ? 'border-blue-500 bg-blue-50' 
-              : 'border-slate-300 hover:border-blue-400 bg-white/50'
+            isDragging
+              ? 'border-violet-500 bg-violet-500/10'
+              : 'border-zinc-700 hover:border-violet-400/50 bg-zinc-800/40'
           }`}
         >
           <input
@@ -94,54 +94,54 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             id="file-upload"
           />
           <label htmlFor="file-upload" className="cursor-pointer block text-center">
-            <CloudUpload className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-700 mb-1">
+            <CloudUpload className="h-10 w-10 text-zinc-500 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-zinc-300 mb-1">
               {label}
             </p>
-            <p className="text-xs text-slate-500 mb-2">
+            <p className="text-xs text-zinc-500 mb-1">
               {description}
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-zinc-600">
               JPG, PNG or GIF (max {(maxSize / (1024 * 1024)).toFixed(0)}MB)
             </p>
           </label>
         </div>
       ) : (
-        <div className="border-2 border-green-300 rounded-2xl p-4 bg-green-50/50">
+        <div className="border border-emerald-500/30 rounded-2xl p-4 bg-emerald-500/5">
           {previewUrl && (
             <div className="mb-3 relative">
-              <img 
-                src={previewUrl} 
-                alt="Preview" 
-                className="w-full h-48 object-contain rounded-lg bg-white"
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-48 object-contain rounded-xl bg-zinc-900"
               />
             </div>
           )}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 flex-1 min-w-0">
-              <Image className="h-5 w-5 text-green-600 flex-shrink-0" />
-              <span className="text-sm font-medium text-slate-700 truncate">
+              <Image className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+              <span className="text-sm font-medium text-zinc-200 truncate">
                 {file.name}
               </span>
             </div>
             <button
               type="button"
               onClick={handleClear}
-              className="ml-2 p-1 hover:bg-red-100 rounded-full transition-colors flex-shrink-0"
+              className="ml-2 p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors flex-shrink-0"
               aria-label="Remove uploaded file"
               title="Remove file"
             >
-              <X className="h-5 w-5 text-red-600" />
+              <X className="h-4 w-4" />
             </button>
           </div>
-          <p className="text-xs text-slate-500 mt-2">
+          <p className="text-xs text-zinc-500 mt-2">
             {(file.size / 1024).toFixed(1)} KB
           </p>
         </div>
       )}
 
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+        <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/25 rounded-xl p-3">
           {error}
         </div>
       )}

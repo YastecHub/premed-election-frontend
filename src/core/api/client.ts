@@ -68,6 +68,19 @@ class ApiClient {
     }
   }
 
+  async put<T>(endpoint: string, data?: any): Promise<T> {
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : undefined
+      });
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      this.handleFetchError(error, `Failed to update ${endpoint}`);
+    }
+  }
+
   async delete<T>(endpoint: string): Promise<T> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ElectionState } from '../types';
 import { CountdownTimer } from './CountdownTimer';
+import { Flag, Pause, Square } from 'lucide-react';
 
 interface ElectionStatusWidgetProps {
   electionState: ElectionState;
@@ -9,10 +10,10 @@ interface ElectionStatusWidgetProps {
 export const ElectionStatusWidget: React.FC<ElectionStatusWidgetProps> = ({ electionState }) => {
   const getStatusColor = () => {
     switch (electionState.status) {
-      case 'active': return 'bg-green-500';
-      case 'paused': return 'bg-yellow-500';
+      case 'active': return 'bg-emerald-500';
+      case 'paused': return 'bg-amber-500';
       case 'ended': return 'bg-red-500';
-      default: return 'bg-slate-500';
+      default: return 'bg-zinc-500';
     }
   };
 
@@ -26,18 +27,18 @@ export const ElectionStatusWidget: React.FC<ElectionStatusWidgetProps> = ({ elec
   };
 
   return (
-    <div className="bg-slate-800 rounded-lg p-4 md:p-6">
+    <div className="bento-card p-4 sm:p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">Election Status</h3>
-        <div className={`px-3 py-1 rounded-full text-xs font-bold text-white ${getStatusColor()}`}>
+        <h3 className="text-sm font-semibold text-zinc-100">Election Status</h3>
+        <div className={`px-2.5 py-1 rounded-full text-[10px] font-bold text-white ${getStatusColor()}`}>
           {getStatusText()}
         </div>
       </div>
-      
+
       {electionState.status === 'active' && electionState.endTime ? (
         <div>
-          <p className="text-sm text-slate-400 mb-3">Time Remaining</p>
-          <CountdownTimer 
+          <p className="text-xs text-zinc-500 mb-3 uppercase tracking-wider font-bold">Time Remaining</p>
+          <CountdownTimer
             targetDate={electionState.endTime}
             isActive={true}
             isPaused={false}
@@ -45,11 +46,12 @@ export const ElectionStatusWidget: React.FC<ElectionStatusWidgetProps> = ({ elec
         </div>
       ) : (
         <div className="text-center py-4">
-          <div className="text-2xl mb-2">
-            {electionState.status === 'ended' ? '🏁' : 
-             electionState.status === 'paused' ? '⏸️' : '⏹️'}
+          <div className="mb-2 flex justify-center">
+            {electionState.status === 'ended' ? <Flag className="h-8 w-8 text-zinc-600" /> :
+             electionState.status === 'paused' ? <Pause className="h-8 w-8 text-zinc-600" /> :
+             <Square className="h-8 w-8 text-zinc-600" />}
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-zinc-500">
             {electionState.status === 'ended' ? 'Election has concluded' :
              electionState.status === 'paused' ? 'Election is paused' :
              'Election not started'}
