@@ -220,7 +220,10 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
       )}
 
       {categories.map(category => {
-        const categoryCandidates = candidates.filter(c => c.categoryId === category._id);
+        const categoryCandidates = candidates.filter(c => {
+          const catId = typeof c.categoryId === 'object' ? (c.categoryId as any)._id : c.categoryId;
+          return catId === category._id;
+        });
         if (categoryCandidates.length === 0) return null;
 
         return (
