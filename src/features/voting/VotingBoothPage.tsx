@@ -33,7 +33,15 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
         votingService.getCandidates(),
         categoryService.getCategories(),
       ])
-        .then(([candidatesData, categoriesData]) => {
+        .then(([rawCandidates, categoriesData]) => {
+          // Normalize populated categoryId into the category field
+          const candidatesData = rawCandidates.map(c => {
+            if (typeof c.categoryId === 'object' && c.categoryId) {
+              const cat = c.categoryId as any;
+              return { ...c, category: { _id: cat._id, name: cat.name } as Category, categoryId: cat._id };
+            }
+            return c;
+          });
           setCandidates(candidatesData);
           setCategories(categoriesData);
         })

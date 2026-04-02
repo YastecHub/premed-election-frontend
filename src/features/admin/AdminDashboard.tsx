@@ -65,11 +65,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
 
   const loadDashboardData = async () => {
     try {
-      const [pendingData, candidatesData, categoriesData] = await Promise.all([
+      const [pendingData, rawCandidates, categoriesData] = await Promise.all([
         adminService.getPendingUsers(),
         votingService.getCandidates(),
         categoryService.getCategories()
       ]);
+      // Normalize populated categoryId into the category field
+      const candidatesData = rawCandidates.map(c => {
+        if (typeof c.categoryId === 'object' && c.categoryId) {
+          const cat = c.categoryId as any;
+          return { ...c, category: { _id: cat._id, name: cat.name, description: cat.description } as Category, categoryId: cat._id };
+        }
+        return c;
+      });
       setPendingUsers(pendingData);
       setCandidates(candidatesData);
       setCategories(categoriesData);
