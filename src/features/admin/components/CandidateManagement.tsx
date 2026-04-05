@@ -6,6 +6,7 @@ import { useConfirmation } from '../../../shared/hooks/useConfirmation';
 import { ConfirmationModal } from '../../../shared/components/ConfirmationModal';
 import { FileUpload } from '../../../shared/components/FileUpload';
 import { uploadToCloudinary } from '../../../shared/utils/cloudinary';
+import { compressImage } from '../../../shared/utils/imageCompression';
 import { Plus, Trash2, Upload, Users } from 'lucide-react';
 
 interface CandidateManagementProps {
@@ -47,7 +48,8 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
 
     setIsUploading(true);
     try {
-      const photoUrl = await uploadToCloudinary(selectedPhoto);
+      const compressed = await compressImage(selectedPhoto);
+      const photoUrl = await uploadToCloudinary(compressed);
       await adminService.addCandidate({ ...newCandidate, photoUrl });
       showSuccess('Candidate added successfully');
       setShowAddForm(false);
@@ -172,8 +174,8 @@ export const CandidateManagement: React.FC<CandidateManagementProps> = ({ candid
             <div className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
               <FileUpload
                 onFileSelect={setSelectedPhoto}
-                acceptedTypes={['image/jpeg', 'image/png', 'image/jpg']}
-                maxSize={5 * 1024 * 1024}
+                acceptedTypes={['image/jpeg', 'image/png', 'image/webp', 'image/heic']}
+                maxSize={15 * 1024 * 1024}
                 preview={true}
               />
             </div>

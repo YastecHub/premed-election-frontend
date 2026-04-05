@@ -3,6 +3,7 @@ import { RegistrationForm, User } from '../../shared/types';
 import { authService } from '../../core/services/auth.service';
 import { useNotification } from '../../shared/contexts/NotificationContext';
 import { FileUpload } from '../../shared/components/FileUpload';
+import { compressImage } from '../../shared/utils/imageCompression';
 import { Upload, Eye, FileCheck } from 'lucide-react';
 
 interface VerificationPageProps {
@@ -46,12 +47,13 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ draft, onVer
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       setUploadStep('verifying');
+      const compressed = await compressImage(selectedFile);
       const formData = new FormData();
       formData.append('matricNumber', draft.matricNumber);
       formData.append('fullName', draft.fullName);
       formData.append('department', draft.department);
       formData.append('email', draft.email);
-      formData.append('document', selectedFile);
+      formData.append('document', compressed);
 
       const user = await authService.registerWithVerification(formData);
       onVerified(user);
@@ -91,7 +93,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ draft, onVer
 
         {!isUploading ? (
           <div className="space-y-4">
-            <FileUpload onFileSelect={setSelectedFile} />
+            <FileUpload onFileSelect={setSelectedFile} maxSize={15 * 1024 * 1024} />
 
             {selectedFile && (
               <button

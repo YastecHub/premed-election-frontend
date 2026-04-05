@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useId } from 'react';
 import { CloudUpload, X, Image } from 'lucide-react';
 
 interface FileUploadProps {
@@ -16,8 +16,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   maxSize = 5 * 1024 * 1024,
   preview = true,
   label = 'Upload Image',
-  description = 'Drag & drop or click to browse'
+  description = 'Tap to take photo or browse'
 }) => {
+  const uniqueId = useId();
+  const inputId = `file-upload-${uniqueId}`;
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -25,8 +27,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = (file: File): string | null => {
-    if (!acceptedTypes.includes(file.type)) {
-      return 'Invalid file type. Please upload JPG, PNG, or GIF image.';
+    // Normalize MIME check: accept image/* on mobile since browsers report types inconsistently
+    const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(file.name);
+    if (!isImage) {
+      return 'Invalid file type. Please upload an image file (JPG, PNG, etc).';
     }
     if (file.size > maxSize) {
       return `File too large. Maximum size is ${(maxSize / (1024 * 1024)).toFixed(0)}MB.`;
@@ -88,12 +92,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           <input
             ref={inputRef}
             type="file"
-            accept={acceptedTypes.join(',')}
+            accept="image/*"
             onChange={handleFileSelect}
             className="hidden"
-            id="file-upload"
+            id={inputId}
           />
-          <label htmlFor="file-upload" className="cursor-pointer block text-center">
+          <label htmlFor={inputId} className="cursor-pointer block text-center">
             <CloudUpload className="h-10 w-10 text-zinc-500 mx-auto mb-3" />
             <p className="text-sm font-semibold text-zinc-300 mb-1">
               {label}
