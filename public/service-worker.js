@@ -1,89 +1,114 @@
-const CACHE_NAME = 'premed-election-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/style.css',
+// Bumping the cache name forces the activate handler to delete the old cache
+// (which held a stale index.html pointing at obsolete hashed bundles).
+const CACHE_NAME = 'premed-election-v2';
+
+// Only precache truly static files. NEVER precache index.html — it must always
+// come from the network so users pick up new bundle hashes after a deploy.
+const PRECACHE_URLS = [
+  '/manifest.json'
 ];
 
-// Install event - cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache).catch(() => {
-        // Continue even if some resources fail to cache
-        console.log('Some resources could not be cached');
-      });
-    })
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll(PRECACHE_URLS).catch(() => {
+        console.log('[SW] Some precache resources failed; continuing.');
+      })
+    )
   );
+  // Activate this SW immediately, replacing any older one.
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
-});
+  event.waitUntil((async () => {
+    // Wipe every old cache (not just ours) — the previous SW version had a
+    // broken cache-first strategy on index.html that 404s after a redeploy.
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames
+        .filter((name) => name !== CACHE_NAME)
+        .map((name) => caches.delete(name))
+    );
 
-// Fetch event - cache-first strategy with network fallback
-self.addEventListener('fetch', (event) => {
-  // Skip service worker for API requests
-  if (event.request.url.includes('/api/') || 
-      event.request.url.includes('onrender.com') ||
-      event.request.url.includes('socket.io')) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
+    await self.clients.claim();
 
-  // Don't cache POST, PUT, DELETE requests
-  if (event.request.method !== 'GET') {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
+    // Force-reload every open tab so users with a stale HTML re-fetch the
+    // current index.html (and its current bundle hash) over the network.
+    // Runs once per SW activation — not a loop.
+    const windowClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of windowClients) {
+      try {
+        await client.navigate(client.url);
+      } catch (_) {
+        // Older browsers may not support client.navigate; fall back to a postMessage
+        // that the page can listen for if it wants to.
+        try { client.postMessage({ type: 'SW_FORCE_RELOAD' }); } catch (_) {}
       }
-      
-      return fetch(event.request).then((response) => {
-        // Cache successful GET responses
-        if (!response || response.status !== 200 || response.type === 'error') {
-          return response;
-        }
-        
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        
-        return response;
-      }).catch(() => {
-        // Return offline page or cached response
-        return new Response('Offline - cached version not available', {
-          status: 503,
-          statusText: 'Service Unavailable',
-          headers: new Headers({
-            'Content-Type': 'text/plain'
-          })
-        });
-      });
+    }
+  })());
+});
+
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // Bypass SW entirely for non-GET, API, websockets, and cross-origin backends
+  if (
+    req.method !== 'GET' ||
+    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/socket.io') ||
+    url.hostname.includes('onrender.com')
+  ) {
+    return;
+  }
+
+  // Network-first for HTML navigations so new deploys are picked up immediately.
+  // index.html references hashed bundles; serving stale HTML breaks deploys.
+  const isNavigation =
+    req.mode === 'navigate' ||
+    (req.headers.get('accept') || '').includes('text/html');
+
+  if (isNavigation) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(() =>
+          caches.match(req).then((cached) => cached || caches.match('/index.html'))
+        )
+    );
+    return;
+  }
+
+  // Cache-first for hashed assets (immutable by hash) and other static files.
+  event.respondWith(
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+      return fetch(req)
+        .then((res) => {
+          if (res && res.status === 200 && res.type !== 'error') {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
+          return res;
+        })
+        .catch(
+          () =>
+            new Response('Offline - cached version not available', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({ 'Content-Type': 'text/plain' })
+            })
+        );
     })
   );
 });
 
-// Handle push notifications
+// Push notifications
 self.addEventListener('push', (event) => {
   const data = event.data?.json() || {};
   const title = data.title || 'PreMed Election';
@@ -98,25 +123,22 @@ self.addEventListener('push', (event) => {
       ...data
     }
   };
-  
+
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  
+
   const urlToOpen = event.notification.data?.url || '/';
-  
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
-      // Check if window already exists
       for (let i = 0; i < windows.length; i++) {
         if (windows[i].location.pathname === new URL(urlToOpen, self.location).pathname) {
           return windows[i].focus();
         }
       }
-      // Open new window if not found
       return clients.openWindow(urlToOpen);
     })
   );

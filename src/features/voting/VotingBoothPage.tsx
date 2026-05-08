@@ -186,19 +186,15 @@ export const VotingBoothPage: React.FC<VotingBoothPageProps> = ({ user, onLogout
       )}
 
       {/* Fixed Vote CTA */}
-      <div className="fixed bottom-6 left-0 right-0 flex justify-center z-40 px-4 pointer-events-none">
-        <div className={`pointer-events-auto transition-all duration-500 w-full max-w-sm ${
-          selectedCandidate ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'
-        }`}>
-          <button
-            type="button"
-            onClick={handleVoteClick}
-            disabled={!selectedCandidate || isSubmitting}
-            className="w-full py-4 rounded-2xl font-bold text-white bg-violet-600 hover:bg-violet-500 active:scale-95 shadow-2xl shadow-violet-500/30 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Submitting…' : 'Review Selection & Vote'}
-          </button>
-        </div>
+      <div className="fixed bottom-6 left-0 right-0 flex justify-center z-40 px-4">
+        <button
+          type="button"
+          onClick={handleVoteClick}
+          disabled={!selectedCandidate || isSubmitting}
+          className="w-full max-w-sm py-4 rounded-2xl font-bold text-white bg-violet-600 hover:bg-violet-500 active:scale-95 shadow-2xl shadow-violet-500/30 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-violet-600/50"
+        >
+          {isSubmitting ? 'Submitting…' : 'Review Selection & Vote'}
+        </button>
       </div>
 
       <VoteConfirmationModal

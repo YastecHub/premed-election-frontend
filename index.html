@@ -24,14 +24,57 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
+
+    <!-- Self-heal: if the bundle 404s (stale cached HTML pointing at a removed
+         hash), the React app never mounts. After a short grace period, wipe
+         all SWs + caches and hard-reload so the user gets the live index.html. -->
+    <script>
+      (function () {
+        var HEAL_TIMEOUT_MS = 6000;
+        var HEAL_FLAG = 'premed_self_heal_attempted';
+        setTimeout(function () {
+          var root = document.getElementById('root');
+          if (root && root.childElementCount > 0) return; // app mounted, all good
+          if (sessionStorage.getItem(HEAL_FLAG)) return;  // already tried this session
+          sessionStorage.setItem(HEAL_FLAG, '1');
+          console.warn('[self-heal] App did not mount; clearing caches and reloading.');
+          var cleanup = Promise.resolve();
+          if ('serviceWorker' in navigator) {
+            cleanup = cleanup.then(function () {
+              return navigator.serviceWorker.getRegistrations().then(function (regs) {
+                return Promise.all(regs.map(function (r) { return r.unregister(); }));
+              });
+            });
+          }
+          if (window.caches) {
+            cleanup = cleanup.then(function () {
+              return caches.keys().then(function (names) {
+                return Promise.all(names.map(function (n) { return caches.delete(n); }));
+              });
+            });
+          }
+          cleanup.finally(function () {
+            location.reload();
+          });
+        }, HEAL_TIMEOUT_MS);
+      })();
+    </script>
+
     <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js').then((registration) => {
             console.log('Service Worker registered:', registration);
-            
+
+            // If the SW asks us to reload (e.g., after activating a new version
+            // with a fresh cache), comply.
+            navigator.serviceWorker.addEventListener('message', (event) => {
+              if (event.data && event.data.type === 'SW_FORCE_RELOAD') {
+                location.reload();
+              }
+            });
+
             // Check for updates every hour
             setInterval(() => {
               registration.update();
