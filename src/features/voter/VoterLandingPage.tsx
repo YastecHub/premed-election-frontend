@@ -59,13 +59,13 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
               Login to Vote
             </h2>
             <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
-              On the approved list? Just enter your matric number and last name — no document upload needed.
+              On the approved list? Just enter your matric number and last name - no document upload needed.
             </p>
 
             <ul className="space-y-2.5 mb-8 flex-1">
               {[
                 'Instant access with matric + last name',
-                'No documents, no OCR — just vote',
+                'No documents, no OCR - just vote',
                 'Secure, encrypted voting process',
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-zinc-400">
