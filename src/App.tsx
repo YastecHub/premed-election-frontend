@@ -206,7 +206,7 @@ function App() {
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
             <BackButton />
             <div className="flex items-center justify-center min-h-[calc(100svh-12rem)]">
-              <LoginPage onSuccess={handleLoginSuccess} />
+              <LoginPage onSuccess={handleLoginSuccess} onNavigateToRegister={handleNavigateToRegister} />
             </div>
           </div>
         );

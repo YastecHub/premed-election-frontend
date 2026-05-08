@@ -33,17 +33,17 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
           </h1>
 
           <p className="text-zinc-400 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
-            Participate in the democratic process. Register, verify your identity, and cast your vote securely.
+            If you're on the approved student list, just log in with your matric number and last name. Cast your vote securely.
           </p>
         </div>
 
         {/* Bento Grid */}
         <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 animation-delay-100">
 
-          {/* Card 1 — Register & Verify */}
+          {/* Card 1 — Login to Vote (primary path) */}
           <button
             type="button"
-            onClick={onNavigateToRegister}
+            onClick={onNavigateToLogin}
             className="bento-card group relative overflow-hidden cursor-pointer p-7 sm:p-8 flex flex-col text-left w-full"
           >
             <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-violet-600/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -51,22 +51,22 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
             <div className="relative mb-5 w-fit">
               <div className="absolute inset-0 bg-violet-600 rounded-xl blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
               <div className="relative bg-gradient-to-br from-violet-500 to-violet-700 p-3.5 rounded-xl shadow-lg shadow-violet-500/25">
-                <UserPlus className="h-7 w-7 text-white" />
+                <Vote className="h-7 w-7 text-white" />
               </div>
             </div>
 
             <h2 className="text-xl sm:text-2xl font-bold text-zinc-100 mb-2 group-hover:text-violet-300 transition-colors duration-200">
-              Register &amp; Verify
+              Login to Vote
             </h2>
             <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
-              First time? Register your student details and verify your identity with OCR.
+              On the approved list? Just enter your matric number and last name — no document upload needed.
             </p>
 
             <ul className="space-y-2.5 mb-8 flex-1">
               {[
-                'Quick registration with student details',
-                'Instant OCR verification of your ID',
-                'Get verified before election day',
+                'Instant access with matric + last name',
+                'No documents, no OCR — just vote',
+                'Secure, encrypted voting process',
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-zinc-400">
                   <CheckCircle className="h-4 w-4 text-violet-400 mt-0.5 shrink-0" />
@@ -75,17 +75,16 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
               ))}
             </ul>
 
-            {/* Non-interactive CTA label */}
             <div className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-violet-600 group-hover:bg-violet-500 text-white text-sm font-bold shadow-lg shadow-violet-500/20 transition-all duration-200">
-              Register Now
+              Login to Vote
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </button>
 
-          {/* Card 2 — Login to Vote */}
+          {/* Card 2 — Register manually (fallback for students not on the list) */}
           <button
             type="button"
-            onClick={onNavigateToLogin}
+            onClick={onNavigateToRegister}
             className="bento-card group relative overflow-hidden cursor-pointer p-7 sm:p-8 flex flex-col text-left w-full"
           >
             <div className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 rounded-full bg-cyan-500/15 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -93,22 +92,22 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
             <div className="relative mb-5 w-fit">
               <div className="absolute inset-0 bg-cyan-500 rounded-xl blur-xl opacity-25 group-hover:opacity-50 transition-opacity duration-500" />
               <div className="relative bg-gradient-to-br from-cyan-500 to-cyan-700 p-3.5 rounded-xl shadow-lg shadow-cyan-500/20">
-                <Vote className="h-7 w-7 text-white" />
+                <UserPlus className="h-7 w-7 text-white" />
               </div>
             </div>
 
             <h2 className="text-xl sm:text-2xl font-bold text-zinc-100 mb-2 group-hover:text-cyan-300 transition-colors duration-200">
-              Login to Vote
+              Not on the list?
             </h2>
             <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
-              Already registered? Enter your Matric Number to access the ballot.
+              Register manually with your student details and verify your identity using your ID document.
             </p>
 
             <ul className="space-y-2.5 mb-8 flex-1">
               {[
-                'Quick login with your matric number',
-                'Secure, encrypted voting process',
-                'Cast your vote when election is active',
+                'For students missing from the approved list',
+                'Upload your ID for OCR verification',
+                'Pending manual review if OCR fails',
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-zinc-400">
                   <CheckCircle className="h-4 w-4 text-cyan-400 mt-0.5 shrink-0" />
@@ -118,7 +117,7 @@ export const VoterLandingPage: React.FC<VoterLandingPageProps> = ({
             </ul>
 
             <div className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-zinc-800 group-hover:bg-zinc-700 border border-zinc-700 group-hover:border-cyan-500/40 text-zinc-100 text-sm font-bold transition-all duration-200">
-              Login to Vote
+              Register Manually
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </button>

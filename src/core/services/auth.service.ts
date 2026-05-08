@@ -18,6 +18,10 @@ export class AuthService {
     return apiClient.post<User>('/login', { matricNumber });
   }
 
+  async loginWithMatricAndName(matricNumber: string, lastName: string): Promise<User> {
+    return apiClient.post<User>('/login-approved', { matricNumber, lastName });
+  }
+
   async verifyUser(userId: string, file: File): Promise<User> {
     const formData = new FormData();
     formData.append('userId', userId);

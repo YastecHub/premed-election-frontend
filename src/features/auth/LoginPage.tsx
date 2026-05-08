@@ -8,11 +8,13 @@ import { User } from '../../shared/types';
 
 interface LoginPageProps {
   onSuccess: (user: User) => void;
+  onNavigateToRegister?: () => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, onNavigateToRegister }) => {
   const { showError } = useNotification();
   const [matricNumber, setMatricNumber] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,12 +23,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess }) => {
       showError(VALIDATION.MATRIC_NUMBER.ERROR_MESSAGE);
       return;
     }
+    if (!lastName.trim()) {
+      showError('Please enter your last name.');
+      return;
+    }
     setIsLoading(true);
     try {
-      const user = await authService.loginWithMatric(matricNumber);
+      const user = await authService.loginWithMatricAndName(matricNumber, lastName.trim());
       onSuccess(user);
     } catch (error: any) {
-      showError(error.message || 'Login failed. Please check your matric number.');
+      showError(error.message || 'Login failed. Please check your matric number and last name.');
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +57,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess }) => {
             Voter Login
           </h2>
           <p className="text-zinc-400 mt-1.5 text-xs sm:text-sm">
-            Enter your matric number to cast your vote
+            Enter your matric number and last name to cast your vote
           </p>
         </div>
 
@@ -65,10 +71,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess }) => {
               required
               maxLength={VALIDATION.MATRIC_NUMBER.LENGTH}
               className="block w-full rounded-xl bg-zinc-800 border border-zinc-700 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 px-4 py-3 text-zinc-100 placeholder-zinc-600 text-sm font-mono tracking-widest outline-none transition-all"
-              placeholder="230905024"
+              placeholder="251106001"
               value={matricNumber}
               onChange={handleMatricChange}
             />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+              Last Name
+            </label>
+            <input
+              type="text"
+              required
+              autoComplete="family-name"
+              className="block w-full rounded-xl bg-zinc-800 border border-zinc-700 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 px-4 py-3 text-zinc-100 placeholder-zinc-600 text-sm outline-none transition-all"
+              placeholder="e.g. Adegoke"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <p className="mt-1.5 text-[11px] text-zinc-500">
+              As it appears on the official student list.
+            </p>
           </div>
 
           <button
@@ -90,6 +114,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess }) => {
               'Login to Vote'
             )}
           </button>
+
+          {onNavigateToRegister && (
+            <p className="text-center text-xs text-zinc-500 pt-1">
+              Not on the approved list?{' '}
+              <button
+                type="button"
+                onClick={onNavigateToRegister}
+                className="text-violet-400 hover:text-violet-300 font-semibold underline-offset-2 hover:underline transition-colors"
+              >
+                Register manually
+              </button>
+            </p>
+          )}
         </form>
       </div>
     </div>
